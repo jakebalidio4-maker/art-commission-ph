@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<title>Admin | Art Commission PH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1a1917;--panel:#23211e;--panel2:#2b2925;--line:#3a3732;--ink:#f1ebdd;--mute:#a39c8e;--gold:#cfae6f;--ok:#8fbf9a;--warn:#d9b266;--bad:#e0968a;--info:#8fb0d4;--r:4px;--serif:'Fraunces',Georgia,serif;--sans:'Figtree',system-ui,sans-serif}
+[hidden]{display:none!important}*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--sans)}
+h1,h2,h3{font-family:var(--serif);font-weight:300}h2{font-size:1.5rem;margin-bottom:10px}h3{font-size:1.1rem;margin:0 0 8px}
+a{color:inherit}:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+label{display:grid;gap:4px;color:var(--mute);font-size:.82rem}
+input,select,textarea{background:var(--bg);border:1px solid var(--line);color:var(--ink);padding:10px;font:inherit;font-size:16px;width:100%;border-radius:var(--r)}
+input[type=checkbox]{width:auto;accent-color:var(--gold)}
+button{background:var(--gold);color:#1a1917;border:0;padding:9px 16px;min-height:40px;font:600 .9rem var(--sans);cursor:pointer;border-radius:var(--r)}
+button:hover{filter:brightness(1.08)}button:disabled{opacity:.5;cursor:wait}button.g{background:none;color:var(--ink);border:1px solid var(--line)}button.d{background:none;color:var(--bad);border:1px solid var(--bad)}
+.box{background:var(--panel);border:1px solid var(--line);padding:24px;max-width:420px;display:grid;gap:12px;border-radius:var(--r)}
+#load,#login{margin:12vh auto 0;width:min(420px,90vw)}
+.shell{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:22px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}
+.brand{font:600 1.25rem var(--serif);padding:0 8px}.brand i{font-weight:300;color:var(--gold)}.brand small{display:block;font:500 .7rem var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+#nav{display:grid;gap:2px}#nav button{background:none;color:var(--mute);text-align:left;font-weight:500}#nav button:hover{background:var(--panel2);color:var(--ink)}#nav button[aria-current=page]{background:var(--panel2);color:var(--gold);box-shadow:inset 3px 0 var(--gold)}
+.sfoot{margin-top:auto;display:grid;gap:8px}.sfoot a{color:var(--mute);padding:6px 8px;font-size:.9rem}
+.main{padding:24px clamp(16px,3vw,40px) 60px;min-width:0}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:22px}.top h1{font-size:1.9rem}#menu{display:none;background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.tile{background:var(--panel);color:var(--ink);border:1px solid var(--line);text-align:left;padding:16px;display:grid;gap:2px;min-height:96px}.tile:hover{border-color:var(--gold)}.tile b{font:300 2.2rem var(--serif);color:var(--gold);line-height:1}.tile span{color:var(--mute);font-size:.85rem;font-weight:500}.tile.hot b{color:var(--warn)}
+.filters{display:grid;grid-template-columns:2fr repeat(4,1fr);gap:8px;margin-bottom:12px}
+.chip{display:inline-flex;gap:8px;align-items:center;background:var(--panel2);border:1px solid var(--gold);padding:4px 6px 4px 12px;border-radius:40px;margin-bottom:12px;font-size:.85rem}.chip button{min-height:26px;padding:0 9px;background:none;color:var(--ink)}
+.split{display:grid;grid-template-columns:minmax(260px,380px) 1fr;gap:16px;align-items:start}
+#olist{display:grid;gap:8px;max-height:78vh;overflow:auto;padding-right:2px}
+.item{background:var(--panel);color:var(--ink);border:1px solid var(--line);text-align:left;padding:12px;display:grid;gap:6px;font-weight:400}.item[aria-pressed=true]{border-color:var(--gold);background:var(--panel2)}
+.item small,.mute{color:var(--mute)}.meta{display:flex;flex-wrap:wrap;gap:5px}
+.b{display:inline-block;padding:2px 9px;border-radius:40px;font-size:.74rem;font-weight:600;border:1px solid var(--line);color:var(--mute)}.b.ok{color:var(--ok);border-color:var(--ok)}.b.warn{color:var(--warn);border-color:var(--warn)}.b.bad{color:var(--bad);border-color:var(--bad)}.b.info{color:var(--info);border-color:var(--info)}
+.card{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:var(--r);margin-bottom:14px}
+.sec{border-top:1px solid var(--line);padding-top:14px;margin-top:14px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;align-items:end;padding:8px 0}
+details{border-top:1px solid var(--line);margin-top:14px;padding-top:10px}summary{cursor:pointer;color:var(--mute);font-weight:500}
+.alert{border:1px solid var(--warn);background:#3a3322;padding:10px 12px;border-radius:var(--r);margin:10px 0}.alert.bad{border-color:var(--bad);background:#3a2622}
+.wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}td,th{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--mute);font-weight:500;white-space:nowrap}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}.gal .card{margin:0;display:grid;gap:8px}.gal img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r);background:var(--bg)}
+.empty{border:1px dashed var(--line);padding:28px;text-align:center;color:var(--mute);border-radius:var(--r)}
+#msg{position:fixed;bottom:16px;right:16px;background:var(--panel2);border:1px solid var(--ok);padding:12px 18px;max-width:min(90vw,420px);z-index:99;border-radius:var(--r);box-shadow:0 10px 30px #000a}
+dialog{background:var(--panel);color:var(--ink);border:1px solid var(--line);padding:24px;border-radius:var(--r);width:min(440px,92vw)}dialog::backdrop{background:#000b}dialog form{display:grid;gap:12px}.acts{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+@media(max-width:900px){.shell{grid-template-columns:1fr}aside{position:fixed;inset:0 25% 0 0;z-index:40;height:auto;transform:translateX(-105%);transition:transform .2s}aside.open{transform:none;box-shadow:0 0 0 100vmax #000a}#menu{display:inline-block}
+.filters{grid-template-columns:1fr 1fr}.filters label:first-child{grid-column:1/-1}.split{grid-template-columns:1fr}.split.has #olist{display:none}.split:not(.has) #odet{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head>
+<body>
+<p id="load" role="status">Loading...</p>
+<div id="login" class="box" hidden><h1>Admin login</h1>
+ <label>Email<input id="em" type="email" autocomplete="username"></label>
+ <label>Password<input id="pw" type="password" autocomplete="current-password"></label>
+ <button id="go">Log in</button><p id="lerr" style="color:var(--bad)" role="alert"></p></div>
+<div id="app" class="shell" hidden>
+ <aside id="side"><div class="brand">Art Commission <i>PH</i><small>Admin</small></div><nav id="nav" aria-label="Admin sections"></nav>
+  <div class="sfoot"><a href="index.html">View public website</a><button class="g" id="out">Log out</button></div></aside>
+ <div class="main"><div class="top"><button id="menu" aria-label="Open menu">Menu</button><h1 id="ttl"></h1></div><div id="view"></div></div></div>
+<div id="msg" hidden role="status"></div>
+<dialog id="md"><form method="dialog"><h2 id="mt"></h2><p id="mp" class="mute"></p><textarea id="mi" rows="3" hidden aria-label="Details"></textarea>
+ <div class="acts"><button value="no" class="g" id="mn">Cancel</button><button value="yes" id="my">Confirm</button></div></form></dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+const sb=supabase.createClient('https://ufpkjbayngiujjwloubx.supabase.co','sb_publishable_UY1HEQRPlq5JUR1a-Sv3cQ_BnnEJvH2');
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const peso=n=>n==null?'-':'₱'+Number(n).toLocaleString('en-PH',{minimumFractionDigits:2,maximumFractionDigits:2});
+const dt=d=>d?new Date(d).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}):'';
+const AS=['Pending','Negotiating','Awaiting Downpayment','In Progress','Done'];
+const pub=p=>sb.storage.from('artworks').getPublicUrl(p).data.publicUrl;
+const bc=t=>/^(Verified|Paid|Delivered|Done|Shipped|Published|Approved|Refunded)/.test(t)?'ok':/^(Pending|Awaiting|Negotiating|Partially|Ready|In Progress)/.test(t)?'warn':/^(Rejected|Cancelled|Hidden|Unpaid)/.test(t)?'bad':'';
+const B=(t,c)=>`<span class="b ${c??bc(t)}">${esc(t)}</span>`;
+let tab='overview',cats=[],L=[],sel=null,F={q:'',st:'',pay:'',dm:'',ds:'',pre:''};
+const TABS=[['overview','Overview'],['orders','Orders'],['payments','Payments'],['history','Order history'],['pricing','Pricing'],['gallery','Gallery'],['reviews','Reviews']];
+function say(t,bad){const m=$('#msg');m.textContent=t;m.style.borderColor=bad?'var(--bad)':'var(--ok)';m.hidden=false;clearTimeout(say.t);say.t=setTimeout(()=>m.hidden=true,3800)}
+const ok=(r,m)=>{if(r.error){say('Error: '+r.error.message,1);return false}say(m);return true};
+function ask(t,p,yes='Confirm',input=false,no='Cancel'){return new Promise(res=>{$('#mt').textContent=t;$('#mp').textContent=p||'';const i=$('#mi');i.hidden=!input;i.value='';$('#my').textContent=yes;$('#mn').textContent=no;const d=$('#md');d.returnValue='';
+ d.onclose=()=>res(d.returnValue=='yes'?(input?(i.value.trim()||null):true):null);d.showModal()})}
+async function shrink(file){const b=await createImageBitmap(file);const s=Math.min(1,1000/Math.max(b.width,b.height));const c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/webp',.82))}
+
+/* access: needs a session AND a row in the admins table (the database checks this again on every action) */
+async function guard(){const {data:{session}}=await sb.auth.getSession();if(!session)return false;const {data}=await sb.rpc('is_admin');if(data===true)return true;await sb.auth.signOut();return 'denied'}
+async function start(){$('#load').hidden=false;$('#login').hidden=$('#app').hidden=true;const g=await guard();$('#load').hidden=true;
+ if(g===true){$('#app').hidden=false;await boot()}else{$('#login').hidden=false;$('#lerr').textContent=g=='denied'?'This account is not an administrator.':''}}
+$('#go').onclick=async()=>{const b=$('#go');b.disabled=true;b.textContent='Logging in...';const {error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});b.disabled=false;b.textContent='Log in';
+ if(error)return $('#lerr').textContent='Login failed: '+error.message;start()};
+$('#out').onclick=async()=>{if(await ask('Are you sure you want to log out?','You will need to log in again to manage orders.','Yes, Log Out',false,'No, Stay')){await sb.auth.signOut();$('#pw').value='';start()}};
+$('#menu').onclick=()=>$('#side').classList.toggle('open');
+
+async function boot(){if(!cats.length)cats=(await sb.from('categories').select('*').order('sort')).data||[];render()}
+async function render(){$('#side').classList.remove('open');$('#ttl').textContent=TABS.find(t=>t[0]==tab)[1];
+ $('#nav').innerHTML=TABS.map(t=>`<button data-t="${t[0]}" ${t[0]==tab?'aria-current="page"':''}>${t[1]}</button>`).join('');
+ $('#view').innerHTML='<p class="mute" role="status">Loading...</p>';try{await V[tab]()}catch(e){$('#view').innerHTML='<div class="alert bad">Something went wrong: '+esc(e.message)+'</div>'}}
+async function ords(){const r=await sb.rpc('admin_orders');if(r.error)throw r.error;return L=r.data||[]}
+const catSel=(v,a)=>`<select ${a}>${cats.map(c=>`<option value="${c.id}" ${c.id==v?'selected':''}>${esc(c.name)}</option>`).join('')}</select>`;
+const catName=id=>(cats.find(c=>c.id==id)||{}).name||id;
+const warn=o=>{const s=o.summary;if(o.delivery_method!='LBC'||['Shipped','Delivered'].includes(o.delivery_status)||o.status=='Cancelled')return '';return o.shipping_fee==null?'LBC shipping fee not entered yet.':s.final_verified<s.final_required?'Not ready for dispatch: the balance and shipping fee are not fully verified.':''};
+const PRE={active:['Active orders',o=>!['Delivered','Cancelled'].includes(o.status)],price:['Awaiting price confirmation',o=>o.price==null&&!['Delivered','Cancelled'].includes(o.status)],down:['Awaiting downpayment',o=>o.status=='Awaiting Downpayment'],progress:['Artwork in progress',o=>o.status=='In Progress'],done:['Done, awaiting final payment or dispatch',o=>o.status=='Done'&&o.delivery_status=='Not Ready'],ready:['Ready to ship or deliver',o=>o.delivery_status=='Ready for Dispatch'],shipped:['Shipped',o=>o.delivery_status=='Shipped'],delivered:['Delivered',o=>o.status=='Delivered'],cancel:['Cancellation requests',o=>o.cancel_requested_at&&o.status!='Cancelled'],refund:['Refunds to send',o=>o.summary.refund_status=='Pending']};
+
+const V={
+async overview(){await ords();const pend=L.reduce((n,o)=>n+o.payments.filter(p=>p.status=='Pending Verification').length,0);
+ const T=k=>{const n=L.filter(PRE[k][1]).length;return `<button class="tile ${['price','cancel','refund'].includes(k)&&n?'hot':''}" data-pre="${k}"><b>${n}</b><span>${PRE[k][0]}</span></button>`};
+ $('#view').innerHTML=`<p class="mute" style="margin-bottom:14px">Counts come straight from your orders. Click a tile to see those orders.</p><div class="tiles"><button class="tile ${pend?'hot':''}" data-go="payments"><b>${pend}</b><span>Payments to verify</span></button>${['active','price','down','progress','done','ready','shipped','delivered','cancel','refund'].map(T).join('')}</div>`},
+
+async orders(){await ords();
+ $('#view').innerHTML=`<div class="filters"><label>Search<input data-f="q" placeholder="Order number, name, contact, or service" value="${esc(F.q)}"></label>
+ <label>Artwork<select data-f="st"><option value="">All</option>${[...AS,'Delivered','Cancelled'].map(x=>`<option ${F.st==x?'selected':''}>${x}</option>`).join('')}</select></label>
+ <label>Payment<select data-f="pay"><option value="">All</option>${['Unpaid','Pending Verification','Partially Paid','Paid','Rejected'].map(x=>`<option ${F.pay==x?'selected':''}>${x}</option>`).join('')}</select></label>
+ <label>Delivery method<select data-f="dm"><option value="">All</option><option ${F.dm=='Local'?'selected':''}>Local</option><option ${F.dm=='LBC'?'selected':''}>LBC</option></select></label>
+ <label>Delivery status<select data-f="ds"><option value="">All</option>${['Not Ready','Ready for Dispatch','Shipped','Delivered'].map(x=>`<option ${F.ds==x?'selected':''}>${x}</option>`).join('')}</select></label></div>
+ <div id="chip"></div><div class="split ${sel?'has':''}" id="split"><div id="olist"></div><div id="odet"></div></div>`;drawList();drawDet()},
+
+async payments(){await ords();const P=[];L.forEach(o=>o.payments.forEach(p=>P.push({p,o})));
+ const pr=({p,o})=>`<div class="card"><div class="meta"><b>${esc(o.order_no)}</b> ${B(p.purpose,'info')} ${B(p.status=='Pending Verification'?'Submitted, NOT verified':p.status,p.status=='Pending Verification'?'warn':bc(p.status))}</div>
+  <p style="margin-top:6px"><b>${peso(p.amount)}</b> | Ref: ${esc(p.reference)} | ${dt(p.submitted_at)}${p.reject_reason?`<br><span class="mute">Rejected: ${esc(p.reject_reason)}</span>`:''}</p>
+  <p class="mute" style="font-size:.85rem">${esc(o.name)} | Price ${peso(o.summary.price)} | Down ${peso(o.summary.down_required)} (verified ${peso(o.summary.down_verified)}) | Balance ${peso(o.summary.balance)} | Shipping ${peso(o.summary.shipping_fee)}</p>
+  <div class="acts" style="justify-content:flex-start;margin-top:8px">${p.receipt_path?`<button class="g" data-rc="${esc(p.receipt_path)}">View receipt</button>`:''}${p.status=='Pending Verification'?`<button data-vp="verify" data-id="${p.id}">Verify payment</button><button class="d" data-vp="reject" data-id="${p.id}">Reject</button>`:''}</div></div>`;
+ const pend=P.filter(x=>x.p.status=='Pending Verification'),blocked=L.filter(o=>warn(o)),unpaid=L.filter(o=>o.summary.price!=null&&o.summary.payment_status!='Paid'&&!['Cancelled','Delivered'].includes(o.status)),ref=L.filter(o=>o.summary.refund_status=='Pending');
+ const lst=(a,f)=>a.length?a.map(f).join(''):'<p class="mute">None.</p>';
+ $('#view').innerHTML=`<div class="alert">Verify a payment only after you see the money in your actual GCash. A screenshot or reference number alone is not proof of payment.</div>
+ <h2>Waiting for your verification (${pend.length})</h2>${pend.length?pend.map(pr).join(''):'<div class="empty">No payments are waiting.</div>'}
+ <h2 style="margin-top:22px">LBC orders not ready for dispatch</h2>${lst(blocked,o=>`<p><b>${esc(o.order_no)}</b> <span class="mute">${esc(warn(o))}</span></p>`)}
+ <h2 style="margin-top:22px">Orders with unpaid balances</h2>${lst(unpaid,o=>`<p><b>${esc(o.order_no)}</b> ${esc(o.name)}: ${peso(o.summary.total_due)} still due ${B(o.summary.payment_status)}</p>`)}
+ <h2 style="margin-top:22px">Refunds to send</h2>${lst(ref,o=>`<p><b>${esc(o.order_no)}</b>: ${peso(o.summary.refund_due)} to ${esc(o.refund_gcash||'(no number given)')}</p>`)}
+ <h2 style="margin-top:22px">Payment history</h2>${lst(P.filter(x=>x.p.status!='Pending Verification'),pr)}`},
+
+async history(){const {data,error}=await sb.from('order_events').select('action,detail,actor,at,orders(order_no)').order('at',{ascending:false}).limit(300);if(error)throw error;
+ $('#view').innerHTML=`<p class="mute" style="margin-bottom:10px">The latest 300 actions. "Client" means an action done from the public website.</p><label style="max-width:340px;margin-bottom:12px">Search by order number or action<input id="hf" placeholder="PPH-1001 or payment"></label><div class="wrap"><table><tr><th>When</th><th>Order</th><th>Action</th><th>Details</th><th>By</th></tr>${(data||[]).map(e=>`<tr data-o="${esc(((e.orders?.order_no||'')+' '+e.action).toUpperCase())}"><td>${dt(e.at)}</td><td>${esc(e.orders?.order_no)}</td><td>${esc(e.action.replace(/_/g,' '))}</td><td>${esc(e.detail)}</td><td>${B(e.actor?'Admin':'Client',e.actor?'info':'')}</td></tr>`).join('')}</table></div>`;
+ $('#hf').oninput=ev=>document.querySelectorAll('#view tr[data-o]').forEach(tr=>tr.hidden=!tr.dataset.o.includes(ev.target.value.trim().toUpperCase()))},
+
+async pricing(){const {data,error}=await sb.from('options').select('*').order('category').order('sort');if(error)throw error;
+ const row=o=>`<div class="row" data-k="opt" data-id="${o.id||''}"><label>Category${catSel(o.category,'class="c"')}</label><label>Service and size<input class="l" value="${esc(o.label)}" maxlength="150"></label><label>Price in PHP (blank = quotation)<input class="p" type="number" min="0" step="0.01" value="${o.price??''}"></label><span class="acts" style="justify-content:flex-start">${o.id?B(o.price==null?'Quotation':'Fixed price',o.price==null?'info':'ok'):''}<button data-save>${o.id?'Save Price':'Add'}</button>${o.id?'<button class="d" data-del>Delete</button>':''}</span></div>`;
+ $('#view').innerHTML=cats.map(c=>{const l=(data||[]).filter(o=>o.category==c.id);return `<div class="card"><h3>${esc(c.name)}</h3>${l.map(row).join('')||'<p class="mute">No services yet.</p>'}</div>`}).join('')+`<div class="card"><h3>Add a service or size</h3>${row({category:cats[0]?.id,label:''})}</div>`},
+
+async gallery(){const {data,error}=await sb.from('artworks').select('*').order('created_at',{ascending:false});if(error)throw error;
+ const row=a=>`<div class="card row" style="display:grid" data-k="art" data-id="${a.id}" data-path="${esc(a.image_path)}"><img src="${esc(pub(a.image_path))}" alt="${esc(a.title)}" loading="lazy"><div>${B(a.published?'Published':'Hidden')}</div><label>Category${catSel(a.category,'class="c"')}</label><label>Title<input class="t" value="${esc(a.title)}"></label><label>Description<input class="d" value="${esc(a.description)}"></label><label><span><input class="pub" type="checkbox" ${a.published?'checked':''}> Show on public gallery</span></label><span class="acts" style="justify-content:flex-start"><button data-save>Save</button><button class="d" data-del>Delete</button></span></div>`;
+ $('#view').innerHTML=`<div class="card" style="max-width:560px;display:grid;gap:10px"><h3>Add artwork</h3><label>Category${catSel(cats[0]?.id,'id="aC"')}</label><label>Title<input id="aT" maxlength="100"></label><label>Description (optional)<input id="aD" maxlength="300"></label><label>Photo (compressed automatically)<input id="aF" type="file" accept="image/*"></label><img id="aP" alt="" hidden style="max-width:200px;border-radius:4px"><button id="addArt">Add artwork</button></div>
+ <h2 style="margin-top:20px">Your artworks (${(data||[]).length})</h2>${(data||[]).length?`<div class="gal">${data.map(row).join('')}</div>`:'<div class="empty">No artworks yet. Upload your first one above.</div>'}`;
+ $('#aF').onchange=e=>{const f=e.target.files[0];$('#aP').hidden=!f;if(f)$('#aP').src=URL.createObjectURL(f)}},
+
+async reviews(){const r=await sb.from('reviews').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;L=r.data||[];
+ $('#view').innerHTML=L.length?L.map((x,i)=>`<div class="card"><div class="meta"><b>${esc(x.name)}</b> <span aria-label="${x.stars} stars">${'★'.repeat(x.stars)}</span> ${B(x.approved?'Published':'Hidden')} <span class="mute">${dt(x.created_at)}</span></div><p style="margin:8px 0">${esc(x.body)}</p><button class="${x.approved?'g':''}" data-v="${i}">${x.approved?'Hide from public':'Approve and publish'}</button></div>`).join(''):'<div class="empty">No reviews yet.</div>'}};
+
+/* orders list and detail */
+function match(o){const q=F.q.toLowerCase(),s=o.summary;return (!q||[o.order_no,o.name,o.contact,o.type].join(' ').toLowerCase().includes(q))&&(!F.st||o.status==F.st)&&(!F.pay||s.payment_status==F.pay)&&(!F.dm||o.delivery_method==F.dm)&&(!F.ds||o.delivery_status==F.ds)&&(!F.pre||PRE[F.pre][1](o))}
+function drawList(){const l=L.map((o,i)=>[o,i]).filter(([o])=>match(o));
+ $('#chip').innerHTML=F.pre?`<span class="chip">${esc(PRE[F.pre][0])}<button class="g" data-clr aria-label="Clear filter">Clear</button></span>`:'';
+ $('#olist').innerHTML=l.map(([o,i])=>`<button class="item" data-sel="${o.id}" aria-pressed="${sel==o.id}"><span><b>${esc(o.order_no)}</b> | ${esc(o.name)}</span><small>${esc(o.type)} | ${peso(o.price)} | ${dt(o.created_at)}</small><span class="meta">${B(o.status)}${B(o.summary.payment_status)}${o.delivery_method?B(o.delivery_method+': '+o.delivery_status,'info'):''}${o.cancel_requested_at&&o.status!='Cancelled'?B('Cancel requested','bad'):''}</span></button>`).join('')||'<div class="empty">No orders match these filters.</div>'}
+function drawDet(){const i=L.findIndex(o=>o.id==sel);const el=$('#odet');if(i<0){el.innerHTML='<div class="empty">Select an order to see its details.</div>';return}const o=L[i],s=o.summary,w=warn(o);
+ const done=['Shipped','Delivered'].includes(o.delivery_status);
+ el.innerHTML=`<div class="card" data-i="${i}"><button class="g" data-back style="margin-bottom:10px">Back to list</button>
+ <h2>${esc(o.order_no)} ${B(o.status)}</h2>
+ ${o.cancel_requested_at&&o.status!='Cancelled'?`<div class="alert bad"><b>Client asked to cancel:</b> ${esc(o.cancel_reason)}<br>Refund GCash: ${esc(o.refund_gcash||'none given')}. Open "Cancel order" below to decide.</div>`:''}
+ ${w?`<div class="alert">${esc(w)}</div>`:''}
+ <p><b>${esc(o.name)}</b> | ${esc(o.contact)} | access code <b>${esc(o.access_code)}</b><br><span class="mute">${esc(o.type)} | Size: ${esc(o.size)}${o.subjects?' | Subjects: '+o.subjects:''} | Client's choice: ${esc(o.est_price||'')}<br>${esc(o.address)}${o.note?'<br>'+esc(o.note):''}</span></p>${o.photo_path?`<button class="g" data-ph="${esc(o.photo_path)}" style="margin-top:8px">View reference photo</button>`:''}
+ <div class="sec"><h3>Price and artwork</h3><div class="row"><label>Artwork price (PHP)<input class="pr" type="number" min="1" step="0.01" value="${o.price??''}"></label><button data-act="price">Confirm price</button><label>Artwork status<select class="as">${AS.map(x=>`<option ${x==o.status?'selected':''}>${x}</option>`).join('')}${['Delivered','Cancelled'].includes(o.status)?`<option selected>${o.status}</option>`:''}</select></label><button class="g" data-act="status">Save status</button></div>
+  <p class="mute">Payment ${B(s.payment_status)} | Downpayment (50%) ${peso(s.down_required)}, verified ${peso(s.down_verified)} | Balance ${peso(s.balance)} | Shipping ${peso(s.shipping_fee)} | <b style="color:var(--ink)">Still due ${peso(s.total_due)}</b></p>
+  ${o.payments.length?`<p class="mute" style="margin-top:6px">${o.payments.map(p=>`${esc(p.purpose)} ${peso(p.amount)} ${B(p.status)}`).join(' &nbsp; ')}</p>`:''}</div>
+ <div class="sec"><h3>Delivery</h3><div class="row"><label>Method<select class="dm"><option value="">Not set</option><option ${o.delivery_method=='Local'?'selected':''}>Local</option><option ${o.delivery_method=='LBC'?'selected':''}>LBC</option></select></label><label>Balance payment<select class="pa"><option ${o.pay_arrangement=='GCash'?'selected':''}>GCash</option><option ${o.pay_arrangement=='COD'?'selected':''}>COD</option></select></label><label>LBC shipping fee (PHP)<input class="fe" type="number" min="0" step="0.01" value="${o.shipping_fee??''}"></label><button class="g" data-act="deliv">Save delivery</button></div>
+  <p>Delivery status ${B(o.delivery_status)}${o.tracking_no?' | LBC tracking <b>'+esc(o.tracking_no)+'</b>':''}</p>
+  ${o.status=='Cancelled'||o.delivery_status=='Delivered'?'':`<div class="row">${o.delivery_status=='Ready for Dispatch'&&o.delivery_method=='LBC'?'<label>LBC tracking number<input class="tn"></label>':'<input class="tn" hidden>'}${o.delivery_method=='Local'&&o.pay_arrangement=='COD'?'<label><span><input class="co" type="checkbox"> COD cash collected</span></label>':'<input class="co" type="checkbox" hidden>'}${o.delivery_status=='Not Ready'?'<button class="g" data-act="d-Ready for Dispatch">Mark ready for dispatch</button>':''}${o.delivery_status=='Ready for Dispatch'&&o.delivery_method=='LBC'?'<button class="g" data-act="d-Shipped">Mark shipped</button>':''}${['Ready for Dispatch','Shipped'].includes(o.delivery_status)?'<button data-act="d-Delivered">Mark delivered</button>':''}</div>`}</div>
+ <div class="sec"><h3>Reply to client</h3><label>Message shown on their Track order page<input class="rp" value="${esc(o.reply)}" maxlength="1000"></label><button class="g" data-act="reply" style="margin-top:8px">Save reply</button></div>
+ ${o.status=='Cancelled'?`<div class="sec"><h3>Cancelled</h3><p>${esc(o.cancel_reason)} | Refund ${peso(s.refund_due)} ${B(s.refund_status)}${s.refund_ref?' ref '+esc(s.refund_ref):''}</p>${s.refund_status=='Pending'?`<div class="row"><label>GCash refund reference<input class="rr"></label><span class="mute">Send to ${esc(o.refund_gcash||'(no number given)')}</span><button data-act="refunded">Mark refunded</button></div>`:''}</div>`:o.status=='Delivered'||done?'':`<details ${o.cancel_requested_at?'open':''}><summary>Cancel order (cannot be undone)</summary><div class="row"><label>Reason<input class="cr" value="${esc(o.cancel_requested_at?o.cancel_reason:'')}"></label><label>Refund amount (max ${peso(+s.down_verified+ +s.final_verified)})<input class="rf" type="number" min="0" step="0.01" value="0"></label><button class="d" data-act="cancel">Cancel order</button>${o.cancel_requested_at?'<button class="g" data-act="decline">Decline request</button>':''}</div></details>`}</div>`}
+
+async function addArt(){const f=$('#aF').files[0],title=$('#aT').value.trim();if(!f||!title)return say('Add a title and a photo.',1);
+ const b=$('#addArt');b.disabled=true;b.textContent='Uploading...';const path=crypto.randomUUID()+'.webp';
+ const u=await sb.storage.from('artworks').upload(path,await shrink(f),{contentType:'image/webp'});
+ if(u.error){say(u.error.message,1);b.disabled=false;b.textContent='Add artwork';return}
+ if(ok(await sb.from('artworks').insert({category:$('#aC').value,title,description:$('#aD').value.trim()||null,image_path:path}),'Artwork added.'))render();else{b.disabled=false;b.textContent='Add artwork'}}
+
+$('#nav').onclick=e=>{const t=e.target.dataset.t;if(t){tab=t;if(t!='orders'){F={q:'',st:'',pay:'',dm:'',ds:'',pre:''};sel=null}render()}};
+$('#view').oninput=e=>{const k=e.target.dataset.f;if(k){F[k]=e.target.value;drawList()}};
+$('#view').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const d=b.dataset;
+ if(d.pre){F={q:'',st:'',pay:'',dm:'',ds:'',pre:d.pre};sel=null;tab='orders';return render()}
+ if(d.go){tab=d.go;return render()}
+ if('clr' in d){F.pre='';return drawList()}
+ if(d.sel){sel=d.sel;$('#split').classList.add('has');drawList();drawDet();return}
+ if('back' in d){sel=null;$('#split').classList.remove('has');drawList();drawDet();return}
+ if(d.ph){const {data}=await sb.storage.from('references').createSignedUrl(d.ph,300);if(data)open(data.signedUrl);return}
+ if(d.rc){const {data}=await sb.storage.from('receipts').createSignedUrl(d.rc,300);if(data)open(data.signedUrl);return}
+ if(d.vp){let reason=null;
+  if(d.vp=='verify'){if(!await ask('Verify this payment?','Only continue if the money is already in your GCash. This cannot be undone.','Yes, I received it'))return}
+  else{reason=await ask('Reject this payment?','The client will see your reason and can submit again.','Reject payment',true);if(!reason)return}
+  b.disabled=true;if(ok(await sb.rpc('admin_review_payment',{p_id:d.id,p_action:d.vp,p_reason:reason}),'Payment '+(d.vp=='verify'?'verified.':'rejected.')))render();else b.disabled=false;return}
+ if(d.v){const x=L[d.v];b.disabled=true;if(ok(await sb.from('reviews').update({approved:!x.approved}).eq('id',x.id),x.approved?'Review hidden.':'Review published.'))render();else b.disabled=false;return}
+ if(b.id=='addArt')return addArt();
+ const card=b.closest('.card[data-i]');
+ if(card&&d.act){const o=L[card.dataset.i],q=x=>card.querySelector(x),a=d.act;let x;
+  if(a=='price'){const v=+q('.pr').value;if(!(v>0))return say('Enter a price above zero.',1);x=await sb.rpc('admin_confirm_order',{p_id:o.id,p_price:v})}
+  else if(a=='status')x=await sb.rpc('admin_set_status',{p_id:o.id,p_status:q('.as').value});
+  else if(a=='deliv'){const m=q('.dm').value;if(!m)return say('Choose a delivery method.',1);const f=q('.fe').value;x=await sb.rpc('admin_set_delivery',{p_id:o.id,p_method:m,p_arr:q('.pa').value,p_fee:f===''?null:+f})}
+  else if(a=='reply')x=await sb.rpc('admin_set_reply',{p_id:o.id,p_reply:q('.rp').value});
+  else if(a=='cancel'){if(!await ask('Cancel this order?','The order will be closed and pending payments rejected. A refund can only be up to the verified payments.','Yes, cancel order',false,'No, keep it'))return;x=await sb.rpc('admin_cancel_order',{p_id:o.id,p_reason:q('.cr').value,p_refund:+q('.rf').value||0})}
+  else if(a=='decline'){const n=await ask('Decline the cancellation request?','Write a short message. The client will see it as your reply.','Decline request',true);if(!n)return;x=await sb.rpc('admin_decline_cancel',{p_id:o.id,p_note:n})}
+  else if(a=='refunded')x=await sb.rpc('admin_mark_refunded',{p_id:o.id,p_ref:q('.rr').value.trim()});
+  else if(a.startsWith('d-')){const to=a.slice(2);if(to!='Ready for Dispatch'&&!await ask('Mark this order as '+to+'?',to=='Delivered'?'This closes the order.':'The client will see the tracking number.','Yes, continue'))return;x=await sb.rpc('admin_set_delivery_status',{p_id:o.id,p_to:to,p_tracking:q('.tn').value.trim()||null,p_collected:q('.co').checked})}
+  if(x){b.disabled=true;if(ok(x,'Saved.'))render();else b.disabled=false}return}
+ const r=b.closest('.row[data-k]');if(!r)return;const k=r.dataset.k,id=r.dataset.id,t=k=='art'?'artworks':'options',q=s=>r.querySelector(s);
+ if('del' in d){if(!await ask('Delete this entry?',k=='art'?'The artwork and its image will be removed.':'Clients will no longer see this service.','Yes, delete'))return;if(k=='art')await sb.storage.from('artworks').remove([r.dataset.path]);if(ok(await sb.from(t).delete().eq('id',id),'Deleted.'))render();return}
+ if('save' in d){let rec;
+  if(k=='opt'){const p=q('.p').value;rec={category:q('.c').value,label:q('.l').value.trim(),price:p===''?null:+p};if(!rec.label)return say('Enter a service and size.',1);if(rec.price!=null&&(isNaN(rec.price)||rec.price<0))return say('Enter a valid price.',1)}
+  else{rec={category:q('.c').value,title:q('.t').value.trim(),description:q('.d').value.trim()||null,published:q('.pub').checked};if(!rec.title)return say('Enter a title.',1)}
+  b.disabled=true;const res=id?await sb.from(t).update(rec).eq('id',id):await sb.from(t).insert(rec);b.disabled=false;
+  if(ok(res,k=='opt'?'Price saved.':'Saved.')&&(!id||k=='art'))render()}};
+start();
+</script></body></html>
