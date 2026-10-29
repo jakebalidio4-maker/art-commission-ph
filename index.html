@@ -550,23 +550,71 @@ button,.btn,input,select,textarea{font-family:var(--sans)}
 @media(max-width:600px){.customer-messages{padding:16px 12px;border-radius:15px}.chat-heading{gap:8px}.chat-secure{font-size:.7rem;padding:6px 8px}.customer-thread{padding:10px;min-height:150px}.customer-message{max-width:94%;padding:11px 12px}.chat-compose-footer{align-items:stretch;flex-direction:column}.chat-compose-footer small{max-width:none}.chat-compose-footer .btn{width:100%}.chat-prompts{gap:6px}.chat-prompts button{font-size:.76rem;padding:7px 10px}.chat-message-meta{flex-direction:column;gap:1px}}
 @media(prefers-reduced-motion:reduce){.customer-thread,.order-list-card{scroll-behavior:auto;transition:none}}
 
-/* Final fix: keep account/order views full-width inside the single-page support area. */
-#supportSections{display:block;width:min(100%,1160px);max-width:1160px;min-width:0;box-sizing:border-box}
-#supportSections>section{width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:clamp(24px,4vw,52px)}
+/* Responsive customer portal fixes: orders, order form and password recovery */
+#supportSections{
+ width:min(100%,1160px);
+ max-width:1160px;
+ min-width:0;
+ margin-inline:auto;
+ box-sizing:border-box;
+}
+#supportSections>#track,
+#supportSections>#order{
+ display:block;
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ box-sizing:border-box;
+ writing-mode:horizontal-tb;
+}
 #supportSections>#track h2,
 #supportSections>#track .section-kicker,
 #supportSections>#track .lead,
 #supportSections>#track #ordersList,
 #supportSections>#track #trackMsg,
-#supportSections>#track #trackOut{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow-wrap:anywhere}
-#supportSections>#track .orders-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
-#passwordResetForm{width:min(100%,680px);margin:18px auto 0}
-#passwordResetForm h3{color:#29231e}
-#passwordResetForm .hint{color:#4f463d;background:#f2e9dd}
-#passwordResetForm label{color:#5d5043}
-#passwordResetForm input{background:#fff;color:#29231e;border:1px solid #cdbba7}
+#supportSections>#track #trackOut,
+#supportSections>#order h2,
+#supportSections>#order .lead,
+#supportSections>#order #orderLoginNote,
+#supportSections>#order #orderForm,
+#supportSections>#order #orderMsg{
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ box-sizing:border-box;
+ writing-mode:horizontal-tb;
+ overflow-wrap:anywhere;
+}
+#supportSections>#track h2,
+#supportSections>#order h2{
+ font-size:clamp(2rem,5vw,3.5rem);
+ line-height:1.15;
+}
+#supportSections>#track #ordersList{
+ display:grid;
+ grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));
+ gap:16px;
+}
+#passwordResetForm{
+ width:min(100%,680px);
+ margin:18px auto 0;
+ box-sizing:border-box;
+}
+#passwordResetForm input{width:100%;box-sizing:border-box}
 #passwordResetForm .btn{width:100%}
-@media(max-width:620px){#supportSections>section{padding:24px 16px}#supportSections>#track .orders-list{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:700px){
+ #supportSections{padding-inline:14px}
+ #supportSections>#track,
+ #supportSections>#order{padding:24px 16px}
+ #supportSections>#track #ordersList{grid-template-columns:minmax(0,1fr)}
+}
+.email-verification-panel{width:min(100%,680px);margin:18px auto 0;box-sizing:border-box}
+.email-verification-panel h3{color:#29231e}
+.email-verification-panel .hint{color:#4f463d;line-height:1.65}
+.email-verification-panel label{color:#5d5043}
+.email-verification-panel input{background:#fff;color:#29231e;border:1px solid #cdbba7;width:100%;box-sizing:border-box}
+.email-verification-panel .btn{width:100%;margin-top:10px}
+@media(max-width:620px){.email-verification-panel{padding:20px 16px}}
 </style>
 <style>
 /* V4 — discrete public / authentication / customer workspace screens */
@@ -843,10 +891,18 @@ input,select,textarea,button,.btn{max-width:100%}
 <label>Your name<input autocomplete="name" maxlength="100" minlength="2" name="full_name" required=""/></label>
 <label>Email address<input autocomplete="email" name="email" required="" type="email"/></label>
 <label>Create password<input autocomplete="new-password" minlength="8" name="password" required="" type="password"/></label>
-<p class="hint">Use an email address you can access. Use an email address you can access, especially for account recovery.</p>
+<p class="hint">Use an email address you can open. You must verify access to this inbox before signing in.</p>
 <button class="btn" type="submit">Create account</button>
 <p class="auth-bottom-prompt">Already have an account? <button class="auth-inline-link" data-auth-mode="signin" type="button">Sign in instead</button></p>
 </form>
+</div>
+<div class="account-card email-verification-panel" hidden="" id="emailVerificationPanel" role="status">
+  <h3>Verify your email address</h3>
+  <p class="hint" id="verificationPanelMessage">Check your inbox and click the verification link before signing in.</p>
+  <form id="resendVerificationForm">
+    <label>Email address<input autocomplete="email" name="email" required="" type="email"/></label>
+    <button class="btn ghost" type="submit">Resend verification email</button>
+  </form>
 </div>
 <div class="account-card portal-access-note" hidden="" id="adminAccountNotice" role="status">
 <h3>Customer account access unavailable</h3>
@@ -995,6 +1051,7 @@ async function refreshCustomerAuth(){
      $('#authForms').hidden=true;
      $('#accountPanel').hidden=true;
      $('#passwordResetForm').hidden=true;
+     $('#emailVerificationPanel').hidden=true;
      notice.hidden=false;
      if(window.APP_PAGE==='dashboard'){location.replace('index.html#account');return;}
      $('#orderForm').hidden=true;
@@ -1007,7 +1064,7 @@ async function refreshCustomerAuth(){
  updateHeaderAccount(currentUser);
  const verified=isVerifiedUser(currentUser);
  if(passwordRecoveryMode){
-   document.body.dataset.view='account';
+   if(location.hash!=='#account') history.replaceState(null,'',location.pathname+location.search+'#account');
    $('#authForms').hidden=true;
    $('#accountPanel').hidden=true;
    $('#passwordResetForm').hidden=false;
@@ -1024,9 +1081,9 @@ async function refreshCustomerAuth(){
    const continueBtn=document.querySelector('#goDashboard');if(continueBtn)continueBtn.hidden=false;
  }
 
- $('#passwordResetForm').hidden=!passwordRecoveryMode;
- $('#authForms').hidden=!!currentUser||passwordRecoveryMode;
- $('#accountPanel').hidden=!currentUser||passwordRecoveryMode;
+ if(!passwordRecoveryMode)$('#passwordResetForm').hidden=true;
+ $('#authForms').hidden=!!currentUser;
+ $('#accountPanel').hidden=!currentUser;
  $('#accountEmail').textContent=currentUser?.email||'';
  $('#accountVerification').textContent=currentUser?(verified?'Your account is ready. You can place orders and view your commissions.':'Your email is not verified yet. Check your inbox, or resend the verification email below.'):'';
  $('#resendVerification').hidden=!currentUser||verified;
@@ -1069,9 +1126,20 @@ setAuthMode('signin');
 
 $('#signInForm').onsubmit=async e=>{
  e.preventDefault();const f=new FormData(e.target);setAccountBusy(e.target,true,'Signing in...');
- const {error}=await sb.auth.signInWithPassword({email:String(f.get('email')).trim(),password:String(f.get('password'))});
+ const {data,error}=await sb.auth.signInWithPassword({email:String(f.get('email')||'').trim(),password:String(f.get('password')||'')});
  setAccountBusy(e.target,false);
  if(error){accountMessage(friendlyAuthError(error,'sign in'),true);return}
+ // Enforce verified email in the customer UI even if Supabase confirmation is misconfigured.
+ // The Supabase Email provider must also have Confirm email enabled for this to be reliable.
+ if(!isVerifiedUser(data?.user)){
+   await sb.auth.signOut();
+   currentUser=null;
+   await refreshCustomerAuth();
+   accountMessage('Please verify your email address using the confirmation link we sent before signing in. Check your inbox and Spam/Junk folder, or request a new verification email.',true);
+   $('#resendVerificationForm [name="email"]').value=String(f.get('email')||'').trim().toLowerCase();
+   $('#emailVerificationPanel').hidden=false;
+   return;
+ }
  // Reject administrator credentials on the customer login form.
  let adminAccount;
  try{adminAccount=await checkCurrentRole()}
@@ -1087,17 +1155,44 @@ $('#signInForm').onsubmit=async e=>{
  if(currentUser){location.hash='#'+(pendingCustomerDestination||'track');pendingCustomerDestination=null;customerView()}
 };
 $('#signUpForm').onsubmit=async e=>{
- e.preventDefault();const f=new FormData(e.target);setAccountBusy(e.target,true,'Creating account...');
+ e.preventDefault();
+ const f=new FormData(e.target);
+ const email=String(f.get('email')||'').trim().toLowerCase();
+ const fullName=String(f.get('full_name')||'').trim();
+ const password=String(f.get('password')||'');
+ const emailInput=e.target.querySelector('[name="email"]');
+ // A syntactically valid address is not proof of inbox access; Supabase email confirmation provides that proof.
+ if(!emailInput.checkValidity()){emailInput.reportValidity();return}
+ if(/\s/.test(email)){accountMessage('Remove spaces from the email address and try again.',true);return}
+ if(password.length<8){accountMessage('Choose a password with at least 8 characters.',true);return}
+ setAccountBusy(e.target,true,'Creating account...');
  const {data,error}=await sb.auth.signUp({
-  email:String(f.get('email')).trim(),
-  password:String(f.get('password')),
-  options:{data:{full_name:String(f.get('full_name')).trim()},emailRedirectTo:window.location.origin+window.location.pathname}
+  email,
+  password,
+  options:{
+   data:{full_name:fullName},
+   emailRedirectTo:window.location.origin+window.location.pathname+'#account'
+  }
  });
  setAccountBusy(e.target,false);
  if(error){accountMessage(friendlyAuthError(error,'sign up'),true);return}
  e.target.reset();
- if(data.session){await sb.auth.signOut(); currentUser=null;await refreshCustomerAuth();setAuthMode('signin');accountMessage('Account created! Sign in with your email and password to continue.');}
- else {setAuthMode('signin');accountMessage('Account created. If email confirmation is required, check your inbox before signing in.');}
+ setAuthMode('signin');
+ const panel=$('#emailVerificationPanel');
+ const resendInput=$('#resendVerificationForm [name="email"]');
+ resendInput.value=email;
+ panel.hidden=false;
+ if(data.session){
+   // A session on signup usually means Supabase email confirmation is disabled.
+   await sb.auth.signOut();
+   currentUser=null;
+   await refreshCustomerAuth();
+   $('#verificationPanelMessage').textContent='Your account was created, but Supabase returned a signed-in session without email verification. To require verified email addresses, enable Authentication → Sign In / Providers → Email → Confirm email in Supabase, then test with a new email address.';
+   accountMessage('Email verification is not being enforced yet. Update the Supabase Email provider setting before using this system with customers.',true);
+ }else{
+   $('#verificationPanelMessage').textContent='If the address can receive email and registration succeeded, a verification link will arrive. Open it before signing in. Check Spam/Junk if it does not appear.';
+   accountMessage('Account request received. Check your email and verify the address before signing in.',false);
+ }
 };
 
 $('#passwordResetForm').onsubmit=async e=>{
@@ -1115,18 +1210,12 @@ $('#passwordResetForm').onsubmit=async e=>{
  passwordRecoveryMode=false;
  e.target.reset();
  e.target.hidden=true;
- // End the recovery session so the customer can explicitly sign in with the new password.
  const {error:signOutError}=await sb.auth.signOut();
  currentUser=null;
  await refreshCustomerAuth();
  setAuthMode('signin');
- if(signOutError){
-   accountMessage('Your password was updated. Please sign out and sign in again with your new password.',false);
- }else{
-   accountMessage('Password updated successfully. Sign in with your new password to access your account.',false);
- }
+ accountMessage(signOutError?'Your password was updated. Please sign out and sign in again with your new password.':'Password updated successfully. Sign in with your new password to access your account.',false);
  location.hash='#account';
- customerView();
 };
 
 $('#forgotPassword').onclick=async()=>{
@@ -1139,6 +1228,21 @@ $('#resendVerification').onclick=async()=>{
  if(!currentUser?.email)return;
  const {error}=await sb.auth.resend({type:'signup',email:currentUser.email,options:{emailRedirectTo:window.location.origin+window.location.pathname}});
  accountMessage(error?friendlyAuthError(error,'verification'):'If the account needs verification, a new email has been sent.',!!error);
+};
+
+$('#resendVerificationForm').onsubmit=async e=>{
+ e.preventDefault();
+ const email=String(new FormData(e.target).get('email')||'').trim().toLowerCase();
+ if(!email||/\s/.test(email)){accountMessage('Enter a valid email address without spaces.',true);return}
+ const btn=e.target.querySelector('button[type="submit"]');
+ btn.disabled=true;btn.textContent='Sending...';
+ const {error}=await sb.auth.resend({
+   type:'signup',
+   email,
+   options:{emailRedirectTo:window.location.origin+window.location.pathname+'#account'}
+ });
+ btn.disabled=false;btn.textContent='Resend verification email';
+ accountMessage(error?friendlyAuthError(error,'verification'):'If this address has an unverified account, a new verification email will be sent. Check your inbox and Spam/Junk folder.',!!error);
 };
 $('#signOutBtn').onclick=async()=>{
  await sb.auth.signOut();currentUser=null;T=null;
@@ -1328,16 +1432,11 @@ $('#revForm').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(n
 const bg=$('.burger'),mn=$('#menu');bg.onclick=()=>{const o=mn.classList.toggle('open');bg.setAttribute('aria-expanded',o)};mn.onclick=e=>{if(e.target.closest('a')){mn.classList.remove('open');bg.setAttribute('aria-expanded','false')}};
 function enterPasswordRecovery(){
  passwordRecoveryMode=true;
- // Recovery links return to the homepage URL; force the customer-account view
- // so the new-password form is visible instead of leaving the customer on the hero.
- document.body.dataset.view='account';
- if(location.hash!=='#account'){
-   history.replaceState(null,'',location.pathname+location.search+'#account');
- }
+ if(location.hash!=='#account') history.replaceState(null,'',location.pathname+location.search+'#account');
  $('#authForms').hidden=true;
  $('#accountPanel').hidden=true;
  $('#passwordResetForm').hidden=false;
- accountMessage('Your recovery link is valid. Enter and confirm your new password below.');
+ accountMessage('Your recovery link is valid. Enter and confirm your new password below.',false);
 }
 load();
 refreshCustomerAuth();
@@ -1348,8 +1447,7 @@ sb.auth.onAuthStateChange((event,_session)=>{
  }
  setTimeout(()=>refreshCustomerAuth(),0);
 });
-// Support recovery links where the Supabase client has already restored a recovery session
-// before the listener is attached.
+// Handle a recovery session restored from the URL before the auth listener starts.
 (async()=>{
  const {data:{session}}=await sb.auth.getSession();
  const recoveryHash=/(?:^|[&#])type=recovery(?:&|$)/i.test(location.hash);
