@@ -754,6 +754,19 @@ button,.btn,input,select,textarea{font-family:var(--sans)}
   }
 }
 
+ 
+/* Separate shop listing while sharing the same artwork detail dialog and cart */
+#shop .grid{align-items:stretch}
+#shopGrid .art{display:flex;flex-direction:column;min-width:0}
+#shopGrid .art img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.art-card-copy{display:grid;gap:5px;padding:12px 4px 4px;color:#29231e}
+.art-card-copy strong{font:600 1.08rem/1.3 var(--sans);overflow-wrap:anywhere}
+.art-card-copy small{font-size:.9rem;color:#6d6257}
+.art-card-price{font-weight:700;color:#96512f;font-size:1.08rem}
+.art-card-badge{display:inline-flex;align-self:start;border:1px solid #9fc6a8;background:#edf7ef;color:#27613c;border-radius:999px;padding:3px 9px;font-size:.78rem;font-weight:600}
+.art-card-badge.sold{border-color:#d9a49e;background:#fff0ee;color:#94372f}
+#shop .empty{grid-column:1/-1}
+@media(max-width:560px){#shopGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
 </style>
 <style>
 /* V4 — discrete public / authentication / customer workspace screens */
@@ -959,6 +972,7 @@ input,select,textarea,button,.btn{max-width:100%}
 <div class="nav-layout" id="menu">
 <div aria-label="Explore the website" class="nav-primary">
 <a href="index.html#gallery">Gallery</a>
+<a href="index.html#shop">Shop originals</a>
 <a href="index.html#pricing">Pricing</a>
 <a href="index.html#how">How it works</a>
 <a href="index.html#reviews">Reviews</a>
@@ -992,8 +1006,13 @@ input,select,textarea,button,.btn{max-width:100%}
 <div class="tabs" id="tabs"></div>
 <div class="grid" id="grid"></div>
 </section>
+<section class="cream" id="shop">
+<p class="section-kicker">02 / Original artworks for sale</p>
+<div class="studio-section-heading"><div><h2>Shop original artworks.</h2><p class="lead">Browse finished pieces with their size and price. Only artworks currently available for purchase are listed here.</p></div></div>
+<div class="grid" id="shopGrid" aria-live="polite"><p class="lead">Loading available artworks…</p></div>
+</section>
 <section class="cream" id="pricing">
-<p class="section-kicker">02 / Services &amp; pricing</p>
+<p class="section-kicker">03 / Services &amp; pricing</p>
 <h2>Choose a starting point.</h2>
 <p class="lead">Clear starting prices for standard services and personalized quotes for special requests.</p>
 <div aria-label="Popular commission categories" class="service-teasers">
@@ -1006,7 +1025,7 @@ input,select,textarea,button,.btn{max-width:100%}
 <p class="note"><strong>Before you pay:</strong> a 50% GCash downpayment is required after Jake confirms and you accept the final price. “Price on quotation” services are priced after review. Standard prices may be discussed before the commission is accepted.</p>
 </section>
 <section id="how">
-<p class="section-kicker">03 / The process</p>
+<p class="section-kicker">04 / The process</p>
 <h2>From your idea to finished art.</h2>
 <p class="lead">A straightforward commission process with clear payment and progress updates.</p>
 <div class="steps">
@@ -1104,7 +1123,7 @@ input,select,textarea,button,.btn{max-width:100%}
 <label>Category<select id="fCat" name="category"></select></label>
 <label>Service and size<select id="fSvc"></select></label>
 <div class="note" id="fPrice" role="status"></div>
-<div class="two"><label id="fSubW">Number of subjects<input min="1" name="subjects" type="number" value="1"/></label><label id="fDimW">Requested size or dimensions<input name="size" placeholder="e.g. 20 x 30 cm"/></label></div>
+<div class="two"><label id="fSubW">Number of subjects<input min="1" name="subjects" type="number" value="1"/></label><label id="fDimW">Requested size<select id="fDimSelect" name="size_choice"><option value="A5 — 14.8 × 21 cm">A5 — 14.8 × 21 cm</option><option value="A4 — 21 × 29.7 cm">A4 — 21 × 29.7 cm</option><option value="A3 — 29.7 × 42 cm">A3 — 29.7 × 42 cm</option><option value="8 × 10 inches">8 × 10 inches</option><option value="12 × 16 inches">12 × 16 inches</option><option value="16 × 20 inches">16 × 20 inches</option><option value="Other / custom dimensions">Other / custom dimensions</option></select><input id="fDimCustom" name="size" placeholder="Enter your preferred dimensions" hidden/></label></div>
 <label>Description of the artwork<textarea name="note" required="" rows="3"></textarea></label>
 <label>Reference photo<input accept="image/*" name="photo" type="file"/></label>
 <h3 class="fh">Delivery</h3>
@@ -1529,7 +1548,12 @@ function drawGallery(){
  items=arts.length?arts.map(a=>({id:a.id,cat:a.category,title:a.title,desc:a.description||'',img:pub(a.image_path),size:a.size||'',price:a.price==null?null:Number(a.price),forSale:!!a.for_sale,isSold:!!a.is_sold,seed:0})):SAMPLE.map((a,i)=>({cat:'portrait',type:a[0],title:a[1],desc:'Portfolio sample. Contact Jake to request a similar custom piece.',seed:i+1,forSale:false,isSold:false,price:null,size:''}));
  $('#tabs').innerHTML=[{id:'All',name:'All'},...cats].map(c=>`<button class="${c.id==cat?'on':''}" data-c="${c.id}" aria-pressed="${c.id==cat?'true':'false'}">${esc(c.name)}</button>`).join('');
  $('#grid').innerHTML=(arts.length?'':'<p class="note" style="grid-column:1/-1">Sample illustrations are shown until Jake uploads his real artworks.</p>')+items.map((a,i)=>[a,i]).filter(([a])=>cat=='All'||a.cat==cat).map(([a,i])=>`<div class="art" tabindex="0" role="button" aria-label="View details for ${esc(a.title)}" data-i="${i}">${vis(a)}<div class="art-card-copy"><strong>${esc(a.title)}</strong>${a.size?`<small>${esc(a.size)}</small>`:''}${a.forSale&&!a.isSold&&a.price!=null?`<span class="art-card-price">₱${a.price.toLocaleString('en-PH')}</span><span class="art-card-badge">Available to buy</span>`:a.isSold?'<span class="art-card-badge sold">Sold</span>':'<small>Portfolio artwork · Custom requests welcome</small>'}</div></div>`).join('')||'<p class="lead">No artworks in this category yet.</p>';
- updateCartCount();}
+ drawShop();updateCartCount();}
+function drawShop(){
+ const grid=$('#shopGrid');if(!grid)return;
+ const available=items.map((a,i)=>[a,i]).filter(([a])=>a.id&&a.forSale&&!a.isSold&&a.price!=null&&Number(a.price)>0);
+ grid.innerHTML=available.map(([a,i])=>`<div class="art" tabindex="0" role="button" aria-label="View ${esc(a.title)} for sale" data-i="${i}">${vis(a)}<div class="art-card-copy"><strong>${esc(a.title)}</strong><small>Size: ${esc(a.size||'Contact artist for dimensions')}</small><span class="art-card-price">${money(a.price)}</span><span class="art-card-badge">Available to buy</span></div></div>`).join('')||'<div class="empty"><h3>No original artworks available right now</h3><p>Check back later, or request a custom artwork.</p><a class="btn sm" href="#order">Request a commission</a></div>';
+}
 const vis=a=>a.img?`<img src="${esc(a.img)}" alt="${esc(a.title)}" loading="lazy" style="display:block;width:100%">`:art(a.type||'Solo',a.seed||1);
 $('#tabs').onclick=e=>{if(e.target.dataset.c){cat=e.target.dataset.c;drawGallery()}};
 let cart=[];
@@ -1542,7 +1566,9 @@ function openArt(el){const a=items[+el.dataset.i];if(!a)return;$('#dlgArt').inne
  $('#dlg').showModal()}
 $('#dlg').onclick=e=>{if(e.target.id=='dlg'){e.target.close();return}const add=e.target.closest('[data-add-cart]'),buy=e.target.closest('[data-buy-now]');if(add){addCart(add.dataset.addCart);$('#dlg').close()}if(buy){addCart(buy.dataset.buyNow);$('#dlg').close();openCart(true)}};
 $('#grid').onclick=e=>{const a=e.target.closest('.art');if(a)openArt(a)};
+$('#shopGrid').onclick=e=>{const a=e.target.closest('.art');if(a)openArt(a)};
 $('#grid').onkeydown=e=>{if(e.key=='Enter'||e.key==' '){const a=e.target.closest('.art');if(a){e.preventDefault();openArt(a)}}};
+$('#shopGrid').onkeydown=e=>{if(e.key=='Enter'||e.key==' '){const a=e.target.closest('.art');if(a){e.preventDefault();openArt(a)}}};
 function addCart(id){const a=arts.find(x=>x.id===id);if(!a||!a.for_sale||a.is_sold||a.price==null){cartNotice('This artwork is no longer available for purchase.',true);return}if(cart.some(x=>x===id)){cartNotice('This original artwork is already in your cart.');return}cart.push(id);updateCartCount();cartNotice(`${a.title} added to your cart.`)}
 function cartNotice(message,error=false){const m=$('#cartMessage');if(!m)return;m.textContent=message;m.hidden=false;m.classList.toggle('error',error)}
 function openCart(showCheckout=false){renderCart();$('#cartMessage').hidden=true;if(showCheckout)$('#cartCheckout').hidden=false;$('#cartDlg').showModal()}
@@ -1557,9 +1583,10 @@ $('#cartCheckout').addEventListener('submit',async e=>{e.preventDefault();if(!cu
 function drawPrices(){
  $('#priceBox').innerHTML=cats.map(c=>{const l=opts.filter(o=>o.category==c.id);return l.length?`<div class="pc"><h3>${esc(c.name)}</h3><ul>${l.map(o=>`<li>${esc(o.label)}<br><b class="pp">${o.price!=null?'₱'+Number(o.price).toLocaleString():'Price on quotation'}</b></li>`).join('')}</ul></div>`:''}).join('')}
 function fillForm(){$('#fCat').innerHTML=cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');fCat()}
-function fCat(){const c=$('#fCat').value;$('#fSvc').innerHTML=opts.filter(o=>o.category==c).map(o=>`<option value="${o.id}">${esc(o.label)}</option>`).join('');$('#fSubW').hidden=c!='portrait';$('#fDimW').hidden=c=='portrait';fPrice()}
+function fCat(){const c=$('#fCat').value;$('#fSvc').innerHTML=opts.filter(o=>o.category==c).map(o=>`<option value="${o.id}">${esc(o.label)}</option>`).join('');$('#fSubW').hidden=c!='portrait';$('#fDimW').hidden=c=='portrait';$('#fDimSelect').hidden=c=='portrait';$('#fDimCustom').hidden=true;$('#fDimCustom').value='';fPrice()}
 function fPrice(){const o=opts.find(x=>x.id==$('#fSvc').value);$('#fPrice').textContent=!o?'':o.price!=null?`Fixed price: ₱${Number(o.price).toLocaleString()} (negotiable)`:'Price on quotation: Jake will send you a quote after reviewing your details.'}
 $('#fCat').onchange=fCat;$('#fSvc').onchange=fPrice;
+$('#fDimSelect').onchange=()=>{const custom=$('#fDimSelect').value==='Other / custom dimensions';$('#fDimCustom').hidden=!custom;$('#fDimCustom').required=custom;if(!custom)$('#fDimCustom').value=''};
 function drawReviews(){
  $('#revList').innerHTML=revs.map(r=>`<blockquote>${'★'.repeat(r.stars)}<br>${esc(r.body)}<cite>${esc(r.name)}</cite></blockquote>`).join('')||'<p class="lead">No reviews yet. Be the first.</p>'}
 
@@ -1568,7 +1595,7 @@ $('#orderForm').onsubmit=async e=>{
  if(!currentUser||!isVerifiedUser(currentUser)){show($('#orderMsg'),'Please sign in with a verified email account before placing an order.');location.href='index.html#account';return}
  const f=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Sending...';
  try{
-  const o=opts.find(x=>x.id==$('#fSvc').value);if(!o)throw new Error('Please choose a service and size.');
+  const o=opts.find(x=>x.id==$('#fSvc').value);if(!o)throw new Error('Please choose a service and size.');if(f.get('category')!=='portrait'&&f.get('size_choice')==='Other / custom dimensions'&&!String(f.get('size')||'').trim())throw new Error('Please enter your custom dimensions.');
   let path=null;const file=f.get('photo');
   if(file&&file.size){
    if(file.size>12*1024*1024)throw new Error('Please choose a reference image smaller than 12 MB.');
@@ -1578,7 +1605,7 @@ $('#orderForm').onsubmit=async e=>{
   const port=f.get('category')=='portrait';
   const {data,error}=await sb.rpc('create_order',{p:{
    name:f.get('name'),contact:f.get('contact'),category:f.get('category'),service:o.label,
-   size:port?'':f.get('size'),subjects:port?f.get('subjects'):'',address:f.get('address'),
+   size:port?'':(f.get('size_choice')==='Other / custom dimensions'?String(f.get('size')||'').trim():String(f.get('size_choice')||'')),subjects:port?f.get('subjects'):'',address:f.get('address'),
    note:f.get('note'),photo:path,est:o.price!=null?'Fixed price: PHP '+o.price:'Quotation'
   }});
   if(error)throw error;
