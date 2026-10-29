@@ -930,219 +930,28 @@ input,select,textarea,button,.btn{max-width:100%}
 /* Keep account toolbar and action buttons balanced across tablet and phone widths. */
 @media(max-width:760px){.studio-section-heading{align-items:stretch;gap:18px}.studio-section-heading>div{max-width:none}.studio-quicklink{align-self:flex-start;max-width:100%;white-space:normal;text-align:center}}
 @media(max-width:520px){.studio-section-heading{margin-bottom:24px}.studio-quicklink{width:100%;justify-content:center;min-height:48px;padding:13px 16px}.spa-toolbar{align-items:flex-start;flex-direction:column;gap:12px}.spa-toolbar>span{padding-left:3px}.spa-back{width:auto;max-width:100%;font-size:.9rem}#gallery .studio-section-heading h2{max-width:14ch}}
-</style><style>
 
-/* FINAL RESPONSIVE LAYOUT OVERRIDES
-   Keep the product-details modal and custom commission form readable at all widths. */
-#supportSections {
-  display: block;
-  width: min(100%, 1200px) !important;
-  max-width: 1200px !important;
-  min-width: 0 !important;
-  margin: 0 auto !important;
-  padding: clamp(18px, 3vw, 34px) clamp(14px, 3vw, 36px) 72px !important;
-  box-sizing: border-box !important;
-}
-body[data-view="public"] #supportSections,
-body[data-view="gallery"] #supportSections,
-body[data-view="pricing"] #supportSections,
-body[data-view="how"] #supportSections,
-body[data-view="reviews"] #supportSections {
-  display: none !important;
-}
-#supportSections > #account,
-#supportSections > #order,
-#supportSections > #track {
-  display: none !important;
-  position: relative !important;
-  float: none !important;
-  clear: both !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  margin: 0 auto !important;
-  box-sizing: border-box !important;
-  writing-mode: horizontal-tb !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
-}
-body[data-view="account"] #supportSections > #account,
-body[data-view="order"] #supportSections > #order,
-body[data-view="track"] #supportSections > #track {
-  display: block !important;
-}
-#supportSections > #order {
-  padding: clamp(24px, 4vw, 52px) !important;
-  border: 1px solid #e3d5c4 !important;
-  border-radius: 20px !important;
-  background: linear-gradient(145deg, #fffaf3, #f7efe5) !important;
-  box-shadow: 0 12px 34px rgba(65, 43, 25, .06) !important;
-}
-#supportSections > #order > .section-kicker,
-#supportSections > #order > h2,
-#supportSections > #order > .lead,
-#supportSections > #order > #orderLoginNote {
-  display: block !important;
-  position: static !important;
-  float: none !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  white-space: normal !important;
-  writing-mode: horizontal-tb !important;
-  word-break: normal !important;
-  overflow-wrap: normal !important;
-  box-sizing: border-box !important;
-}
-#supportSections > #order > .section-kicker {
-  margin: 0 0 12px !important;
-}
-#supportSections > #order > h2 {
-  font-size: clamp(2.1rem, 4.8vw, 3.65rem) !important;
-  line-height: 1.12 !important;
-  letter-spacing: -.03em !important;
-  margin: 0 0 14px !important;
-}
-#supportSections > #order > .lead {
-  max-width: 68ch !important;
-  margin: 0 0 24px !important;
-  line-height: 1.7 !important;
-}
-#supportSections > #order > #orderForm {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  gap: 18px !important;
-  width: min(100%, 900px) !important;
-  max-width: 900px !important;
-  min-width: 0 !important;
-  margin: 24px auto 0 !important;
-  padding: clamp(20px, 3.2vw, 36px) !important;
-  box-sizing: border-box !important;
-  border-radius: 16px !important;
-  justify-self: stretch !important;
-}
-#supportSections > #order #orderForm > *,
-#supportSections > #order #orderForm label,
-#supportSections > #order #orderForm input,
-#supportSections > #order #orderForm select,
-#supportSections > #order #orderForm textarea {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-#supportSections > #order #orderForm .two {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 14px !important;
-  width: 100% !important;
-}
-#supportSections > #order #orderForm .fh {
-  display: block !important;
-  width: 100% !important;
-  line-height: 1.35 !important;
-}
-#supportSections > #track {
-  padding: clamp(24px, 4vw, 52px) !important;
-  border: 1px solid #e3d5c4 !important;
-  border-radius: 20px !important;
-  background: linear-gradient(145deg, #fffaf3, #f7efe5) !important;
-}
-#supportSections > #track > h2,
-#supportSections > #track > .lead,
-#supportSections > #track > .section-kicker,
-#supportSections > #track > #ordersList,
-#supportSections > #track > #trackMsg,
-#supportSections > #track > #trackOut {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-  writing-mode: horizontal-tb !important;
-  word-break: normal !important;
-}
-#supportSections > #track > h2 {
-  font-size: clamp(2.1rem, 4.8vw, 3.65rem) !important;
-  line-height: 1.12 !important;
-  margin: 0 0 14px !important;
-}
-#supportSections > #track > .lead {
-  max-width: 68ch !important;
-  margin-bottom: 24px !important;
-}
-#supportSections > #track > #ordersList {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
-  gap: 16px !important;
-}
-#supportSections > #track > #trackOut:not(:empty) {
-  margin-top: 20px !important;
-  padding: clamp(14px, 3vw, 30px) !important;
-}
-#dlg {
-  width: min(980px, calc(100vw - 32px)) !important;
-  max-width: 980px !important;
-  max-height: calc(100dvh - 32px) !important;
-  margin: auto !important;
-  box-sizing: border-box !important;
-}
-#dlgArt {
-  width: 100% !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-#dlgArt img, #dlgArt svg {
-  max-width: 100% !important;
-  max-height: min(58dvh, 620px) !important;
-  object-fit: contain !important;
-}
-#dlg .cap {
-  width: 100% !important;
-  min-width: 0 !important;
-  box-sizing: border-box !important;
-}
-@media (max-width: 760px) {
-  #supportSections {
-    padding: 18px 12px 48px !important;
-  }
-  #supportSections > #order,
-  #supportSections > #track {
-    padding: 24px 16px !important;
-    border-radius: 15px !important;
-  }
-  #supportSections > #order > h2,
-  #supportSections > #track > h2 {
-    font-size: clamp(2rem, 8.5vw, 2.8rem) !important;
-  }
-  #supportSections > #order #orderForm .two {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-  #supportSections > #order #orderForm {
-    padding: 20px 16px !important;
-  }
-  #supportSections > #track > #ordersList {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-  #dlg {
-    width: calc(100vw - 16px) !important;
-    max-height: calc(100dvh - 16px) !important;
-  }
-  #dlgArt {
-    padding: 16px !important;
-    min-height: 170px !important;
-  }
-  #dlgArt img, #dlgArt svg {
-    max-height: 42dvh !important;
-  }
-}
-@media (min-width: 761px) {
-  #supportSections > #order #orderForm .two {
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  }
-}
-
-</style>
-</head>
+/* Realtime notification center */
+.nav-notifications{position:relative;display:inline-flex;align-items:center}
+#notificationBell{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:42px;padding:9px 12px;border:1px solid var(--line,#dfd2c1);border-radius:999px;background:#fffdf8;color:var(--ink,#29231e);font:600 .9rem/1.2 var(--sans,system-ui);cursor:pointer}
+#notificationBell:hover{background:#f2e9dd}
+#notificationBadge{display:none;min-width:19px;height:19px;padding:0 5px;align-items:center;justify-content:center;border-radius:999px;background:#a65d38;color:white;font-size:.72rem;font-weight:700}
+#notificationBadge.show{display:inline-flex}
+#notificationPanel{position:absolute;z-index:1000;top:calc(100% + 10px);right:0;width:min(390px,calc(100vw - 24px));max-height:min(70vh,560px);overflow:auto;background:#fffdf8;color:#29231e;border:1px solid #dfd2c1;border-radius:16px;box-shadow:0 20px 55px #30201426;padding:14px}
+.notification-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:3px 2px 12px;border-bottom:1px solid #e8ddcf}
+.notification-head strong{font:600 1.05rem/1.2 var(--serif,Georgia,serif)}
+.notification-head button,.notification-item{font:inherit}
+.notification-head button{padding:6px 9px;min-height:32px;background:transparent;color:#8b4b2d;border:0;box-shadow:none;font-size:.78rem}
+.notification-list{display:grid;gap:7px;padding-top:9px}
+.notification-item{display:grid;gap:4px;text-align:left;width:100%;padding:12px;border:1px solid transparent;border-radius:10px;background:#f8f2e9;color:#29231e;box-shadow:none;min-height:0}
+.notification-item:hover{background:#f0e3d4;color:#29231e;border-color:#dfc8b1}
+.notification-item.unread{border-color:#d5a17d;background:#fff7ef}
+.notification-item strong{font-size:.9rem;line-height:1.3}
+.notification-item span{font-size:.84rem;font-weight:400;line-height:1.45;overflow-wrap:anywhere}
+.notification-item small,.notification-empty{font-size:.75rem;color:#74695d}
+.notification-empty{padding:22px 10px;text-align:center}
+@media(max-width:700px){.nav-notifications{width:100%}#notificationBell{width:100%;justify-content:center}#notificationPanel{position:fixed;top:78px;right:12px;left:12px;width:auto;max-height:calc(100dvh - 100px)}}
+</style></head>
 <body>
 <nav aria-label="Main website navigation" class="site-header">
 <a class="logo" href="index.html"><img alt="" onerror="this.remove()" src="logo.png" style="height:30px;vertical-align:middle;margin-right:8px"/>Art Commission <i>PH</i></a>
@@ -1156,6 +965,12 @@ body[data-view="track"] #supportSections > #track {
 </div>
 <div aria-label="Your account and commissions" class="nav-actions">
 <button id="navCart" type="button" aria-label="Open shopping cart">Cart <span id="cartCount">0</span></button>
+<div class="nav-notifications" id="notificationWrap" hidden>
+<button id="notificationBell" type="button" aria-label="Notifications" aria-expanded="false"><span aria-hidden="true">♧</span> Notifications <span id="notificationBadge">0</span></button>
+<div id="notificationPanel" hidden role="region" aria-label="Notifications">
+<div class="notification-head"><strong>Notifications</strong><button type="button" id="markAllNotifications">Mark all read</button></div>
+<div class="notification-list" id="notificationList"><p class="notification-empty">Loading notifications…</p></div>
+</div></div>
 <a class="nav-orders" hidden="" href="#track">My orders</a>
 <a aria-label="Sign in or manage your account" class="nav-account" href="#account"><svg aria-hidden="true" fill="none" height="19" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewbox="0 0 24 24" width="19"><circle cx="12" cy="8" r="3.5"></circle><path d="M5.5 20v-1.5a6.5 6.5 0 0 1 13 0V20"></path></svg><span class="nav-account-label">Sign in</span></a>
 <a class="btn nav-commission" href="#order">Commission artwork</a>
@@ -1371,6 +1186,66 @@ async function checkCurrentRole(){
  if(error)throw new Error('Account permissions could not be checked. Please try again.');
  return data===true;
 }
+
+/* Supabase-backed realtime notifications for the signed-in customer */
+let notificationChannel=null, notificationRows=[];
+const notificationTime=v=>v?new Date(v).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}):'';
+function notificationTarget(n){return n.order_id?'#track':'#account'}
+function renderNotifications(){
+ const badge=$('#notificationBadge'),list=$('#notificationList');
+ const unread=notificationRows.filter(n=>!n.read_at).length;
+ badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('show',unread>0);
+ if(!notificationRows.length){list.innerHTML='<p class="notification-empty">You’re all caught up. New order and chat updates will appear here.</p>';return}
+ list.innerHTML=notificationRows.map(n=>`<button type="button" class="notification-item ${n.read_at?'':'unread'}" data-notification-id="${esc(n.id)}" data-order-id="${esc(n.order_id||'')}"><strong>${esc(n.title)}</strong><span>${esc(n.body)}</span><small>${notificationTime(n.created_at)}${n.read_at?' · Read':' · Unread'}</small></button>`).join('');
+}
+async function loadNotifications(){
+ if(!currentUser)return;
+ const {data,error}=await sb.from('notifications').select('id,title,body,kind,order_id,read_at,created_at').order('created_at',{ascending:false}).limit(40);
+ if(error){$('#notificationList').innerHTML='<p class="notification-empty">Notifications are temporarily unavailable. Check the notification SQL setup and permissions.</p>';return}
+ notificationRows=data||[];renderNotifications();
+}
+async function markNotificationRead(id){
+ const row=notificationRows.find(n=>n.id===id);
+ if(!row||row.read_at)return;
+ const {data,error}=await sb.from('notifications').update({read_at:new Date().toISOString()}).eq('id',id).select('id,read_at').maybeSingle();
+ if(error){accountMessage('Could not mark notification as read. Please try again.',true);return}
+ row.read_at=data?.read_at||new Date().toISOString();renderNotifications();
+}
+async function markAllNotificationsRead(){
+ const ids=notificationRows.filter(n=>!n.read_at).map(n=>n.id);if(!ids.length)return;
+ const {error}=await sb.from('notifications').update({read_at:new Date().toISOString()}).in('id',ids);
+ if(error){accountMessage('Could not mark notifications as read. Please try again.',true);return}
+ const stamp=new Date().toISOString();notificationRows=notificationRows.map(n=>n.read_at?n:{...n,read_at:stamp});renderNotifications();
+}
+async function startCustomerNotifications(){
+ $('#notificationWrap').hidden=false;
+ await loadNotifications();
+ if(notificationChannel)await sb.removeChannel(notificationChannel);
+ notificationChannel=sb.channel('customer-notifications-'+currentUser.id)
+  .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+currentUser.id},payload=>{
+    if(!notificationRows.some(n=>n.id===payload.new.id)){notificationRows.unshift(payload.new);notificationRows=notificationRows.slice(0,40);renderNotifications()}
+  })
+  .on('postgres_changes',{event:'UPDATE',schema:'public',table:'notifications',filter:'user_id=eq.'+currentUser.id},payload=>{
+    notificationRows=notificationRows.map(n=>n.id===payload.new.id?payload.new:n);renderNotifications()
+  }).subscribe();
+}
+async function stopCustomerNotifications(){
+ if(notificationChannel){await sb.removeChannel(notificationChannel);notificationChannel=null}
+ notificationRows=[];$('#notificationWrap').hidden=true;$('#notificationPanel').hidden=true;$('#notificationBell').setAttribute('aria-expanded','false');
+}
+$('#notificationBell').addEventListener('click',async()=>{
+ const panel=$('#notificationPanel'),open=panel.hidden;panel.hidden=!open;$('#notificationBell').setAttribute('aria-expanded',String(open));
+ if(open)await loadNotifications();
+});
+$('#markAllNotifications').addEventListener('click',markAllNotificationsRead);
+$('#notificationList').addEventListener('click',async e=>{
+ const item=e.target.closest('[data-notification-id]');if(!item)return;
+ const id=item.dataset.notificationId,orderId=item.dataset.orderId;await markNotificationRead(id);
+ $('#notificationPanel').hidden=true;$('#notificationBell').setAttribute('aria-expanded','false');
+ if(orderId){location.hash='#track';setTimeout(async()=>{await loadCustomerOrder(orderId);$('#trackOut').scrollIntoView({behavior:'smooth',block:'start'})},100)}
+ else location.hash='#account';
+});
+
 async function refreshCustomerAuth(){
  const {data:{session},error}=await sb.auth.getSession();
  if(error){accountMessage('Could not check your session. Please refresh and try again.',true);return}
@@ -1396,6 +1271,7 @@ async function refreshCustomerAuth(){
    if(isAdmin){
      // Admin can browse the public portfolio, but cannot use customer features.
      currentUser=null;
+     await stopCustomerNotifications();
      T=null;
      if(activeCustomerMessageChannel){await sb.removeChannel(activeCustomerMessageChannel);activeCustomerMessageChannel=null}
      updateHeaderAccount(null);
@@ -1794,13 +1670,13 @@ function enterPasswordRecovery(){
  accountMessage('Your recovery link is valid. Enter and confirm your new password below.',false);
 }
 load();
-refreshCustomerAuth();
+refreshCustomerAuth().then(()=>{if(currentUser&&isVerifiedUser(currentUser))startCustomerNotifications();else stopCustomerNotifications()});
 sb.auth.onAuthStateChange((event,_session)=>{
  if(event==='PASSWORD_RECOVERY'){
    enterPasswordRecovery();
    return;
  }
- setTimeout(()=>refreshCustomerAuth(),0);
+ setTimeout(()=>refreshCustomerAuth().then(()=>{if(currentUser&&isVerifiedUser(currentUser))startCustomerNotifications();else stopCustomerNotifications()}),0);
 });
 // Handle a recovery session restored from the URL before the auth listener starts.
 (async()=>{
