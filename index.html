@@ -1221,8 +1221,9 @@ $('#passwordResetForm').onsubmit=async e=>{
 $('#forgotPassword').onclick=async()=>{
  const email=$('#signInForm [name="email"]').value.trim();
  if(!email){accountMessage('Enter your email address in the Sign in form first.',true);return}
- const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
- accountMessage(error?friendlyAuthError(error,'password reset'):'If an account exists for that email, a password-reset link will be sent.',!!error);
+ const resetRedirect=window.location.origin+window.location.pathname+'?password-reset=1';
+ const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:resetRedirect});
+ accountMessage(error?friendlyAuthError(error,'password reset'):'If an account exists for that email, a password-reset link will be sent. Open the link to set a new password.',!!error);
 };
 $('#resendVerification').onclick=async()=>{
  if(!currentUser?.email)return;
@@ -1432,7 +1433,10 @@ $('#revForm').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(n
 const bg=$('.burger'),mn=$('#menu');bg.onclick=()=>{const o=mn.classList.toggle('open');bg.setAttribute('aria-expanded',o)};mn.onclick=e=>{if(e.target.closest('a')){mn.classList.remove('open');bg.setAttribute('aria-expanded','false')}};
 function enterPasswordRecovery(){
  passwordRecoveryMode=true;
- if(location.hash!=='#account') history.replaceState(null,'',location.pathname+location.search+'#account');
+ // Preserve the recovery query marker while routing the page to the account area.
+ const cleanSearch=location.search;
+ if(location.hash!=='#account') history.replaceState(null,'',location.pathname+cleanSearch+'#account');
+ document.body.dataset.view='account';
  $('#authForms').hidden=true;
  $('#accountPanel').hidden=true;
  $('#passwordResetForm').hidden=false;
@@ -1451,7 +1455,9 @@ sb.auth.onAuthStateChange((event,_session)=>{
 (async()=>{
  const {data:{session}}=await sb.auth.getSession();
  const recoveryHash=/(?:^|[&#])type=recovery(?:&|$)/i.test(location.hash);
- if(session&&recoveryHash&&!passwordRecoveryMode)enterPasswordRecovery();
+ const recoveryQuery=new URLSearchParams(location.search).get('password-reset')==='1';
+ const hasRecoveryTokens=/access_token=/.test(location.hash)&&/refresh_token=/.test(location.hash);
+ if(session&&(recoveryHash||(recoveryQuery&&hasRecoveryTokens))&&!passwordRecoveryMode)enterPasswordRecovery();
 })();
 
 
