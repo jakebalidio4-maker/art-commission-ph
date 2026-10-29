@@ -550,6 +550,23 @@ button,.btn,input,select,textarea{font-family:var(--sans)}
 @media(max-width:600px){.customer-messages{padding:16px 12px;border-radius:15px}.chat-heading{gap:8px}.chat-secure{font-size:.7rem;padding:6px 8px}.customer-thread{padding:10px;min-height:150px}.customer-message{max-width:94%;padding:11px 12px}.chat-compose-footer{align-items:stretch;flex-direction:column}.chat-compose-footer small{max-width:none}.chat-compose-footer .btn{width:100%}.chat-prompts{gap:6px}.chat-prompts button{font-size:.76rem;padding:7px 10px}.chat-message-meta{flex-direction:column;gap:1px}}
 @media(prefers-reduced-motion:reduce){.customer-thread,.order-list-card{scroll-behavior:auto;transition:none}}
 
+/* Final fix: keep account/order views full-width inside the single-page support area. */
+#supportSections{display:block;width:min(100%,1160px);max-width:1160px;min-width:0;box-sizing:border-box}
+#supportSections>section{width:100%;max-width:100%;min-width:0;box-sizing:border-box;padding:clamp(24px,4vw,52px)}
+#supportSections>#track h2,
+#supportSections>#track .section-kicker,
+#supportSections>#track .lead,
+#supportSections>#track #ordersList,
+#supportSections>#track #trackMsg,
+#supportSections>#track #trackOut{display:block;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow-wrap:anywhere}
+#supportSections>#track .orders-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr))}
+#passwordResetForm{width:min(100%,680px);margin:18px auto 0}
+#passwordResetForm h3{color:#29231e}
+#passwordResetForm .hint{color:#4f463d;background:#f2e9dd}
+#passwordResetForm label{color:#5d5043}
+#passwordResetForm input{background:#fff;color:#29231e;border:1px solid #cdbba7}
+#passwordResetForm .btn{width:100%}
+@media(max-width:620px){#supportSections>section{padding:24px 16px}#supportSections>#track .orders-list{grid-template-columns:minmax(0,1fr)}}
 </style>
 <style>
 /* V4 — discrete public / authentication / customer workspace screens */
@@ -848,6 +865,8 @@ input,select,textarea,button,.btn{max-width:100%}
 <h3>Set a new password</h3>
 <p class="hint">Choose a new password for your account.</p>
 <label>New password<input autocomplete="new-password" minlength="8" name="password" required="" type="password"/></label>
+<label>Confirm new password<input autocomplete="new-password" minlength="8" name="confirm_password" required="" type="password"/></label>
+<p class="hint">Use at least 8 characters. Both password fields must match.</p>
 <button class="btn" type="submit">Update password</button>
 </form>
 <div aria-live="polite" class="msg" id="accountMsg" role="status"></div>
@@ -987,7 +1006,14 @@ async function refreshCustomerAuth(){
  }
  updateHeaderAccount(currentUser);
  const verified=isVerifiedUser(currentUser);
- customerView();
+ if(passwordRecoveryMode){
+   document.body.dataset.view='account';
+   $('#authForms').hidden=true;
+   $('#accountPanel').hidden=true;
+   $('#passwordResetForm').hidden=false;
+ }else{
+   customerView();
+ }
  if(window.APP_PAGE==='dashboard'){
    if(!currentUser || !verified){ location.replace('index.html#account?next='+(location.hash==='#order'?'order':'track')); return; }
    document.querySelector('#dashboardProtected').hidden=false;
@@ -998,9 +1024,9 @@ async function refreshCustomerAuth(){
    const continueBtn=document.querySelector('#goDashboard');if(continueBtn)continueBtn.hidden=false;
  }
 
- if(!passwordRecoveryMode)$('#passwordResetForm').hidden=true;
- $('#authForms').hidden=!!currentUser;
- $('#accountPanel').hidden=!currentUser;
+ $('#passwordResetForm').hidden=!passwordRecoveryMode;
+ $('#authForms').hidden=!!currentUser||passwordRecoveryMode;
+ $('#accountPanel').hidden=!currentUser||passwordRecoveryMode;
  $('#accountEmail').textContent=currentUser?.email||'';
  $('#accountVerification').textContent=currentUser?(verified?'Your account is ready. You can place orders and view your commissions.':'Your email is not verified yet. Check your inbox, or resend the verification email below.'):'';
  $('#resendVerification').hidden=!currentUser||verified;
@@ -1075,11 +1101,32 @@ $('#signUpForm').onsubmit=async e=>{
 };
 
 $('#passwordResetForm').onsubmit=async e=>{
- e.preventDefault();const f=new FormData(e.target),btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Updating...';
- const {error}=await sb.auth.updateUser({password:String(f.get('password'))});
+ e.preventDefault();
+ const f=new FormData(e.target);
+ const password=String(f.get('password')||'');
+ const confirmation=String(f.get('confirm_password')||'');
+ const btn=e.target.querySelector('button');
+ if(password.length<8){accountMessage('Use a password with at least 8 characters.',true);return}
+ if(password!==confirmation){accountMessage('The passwords do not match. Please check both fields.',true);return}
+ btn.disabled=true;btn.textContent='Updating...';
+ const {error}=await sb.auth.updateUser({password});
  btn.disabled=false;btn.textContent='Update password';
  if(error){accountMessage('Could not update password: '+error.message,true);return}
- passwordRecoveryMode=false;e.target.reset();e.target.hidden=true;accountMessage('Password updated. You can now use your new password.');await refreshCustomerAuth();
+ passwordRecoveryMode=false;
+ e.target.reset();
+ e.target.hidden=true;
+ // End the recovery session so the customer can explicitly sign in with the new password.
+ const {error:signOutError}=await sb.auth.signOut();
+ currentUser=null;
+ await refreshCustomerAuth();
+ setAuthMode('signin');
+ if(signOutError){
+   accountMessage('Your password was updated. Please sign out and sign in again with your new password.',false);
+ }else{
+   accountMessage('Password updated successfully. Sign in with your new password to access your account.',false);
+ }
+ location.hash='#account';
+ customerView();
 };
 
 $('#forgotPassword').onclick=async()=>{
@@ -1279,10 +1326,35 @@ $('#revForm').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(n
 
 
 const bg=$('.burger'),mn=$('#menu');bg.onclick=()=>{const o=mn.classList.toggle('open');bg.setAttribute('aria-expanded',o)};mn.onclick=e=>{if(e.target.closest('a')){mn.classList.remove('open');bg.setAttribute('aria-expanded','false')}};
-load();refreshCustomerAuth();sb.auth.onAuthStateChange((event,_session)=>{
- if(event==='PASSWORD_RECOVERY'){passwordRecoveryMode=true;$('#authForms').hidden=true;$('#accountPanel').hidden=true;$('#passwordResetForm').hidden=false;accountMessage('Enter a new password to finish resetting your account.')}
- setTimeout(()=>refreshCustomerAuth(),0)
+function enterPasswordRecovery(){
+ passwordRecoveryMode=true;
+ // Recovery links return to the homepage URL; force the customer-account view
+ // so the new-password form is visible instead of leaving the customer on the hero.
+ document.body.dataset.view='account';
+ if(location.hash!=='#account'){
+   history.replaceState(null,'',location.pathname+location.search+'#account');
+ }
+ $('#authForms').hidden=true;
+ $('#accountPanel').hidden=true;
+ $('#passwordResetForm').hidden=false;
+ accountMessage('Your recovery link is valid. Enter and confirm your new password below.');
+}
+load();
+refreshCustomerAuth();
+sb.auth.onAuthStateChange((event,_session)=>{
+ if(event==='PASSWORD_RECOVERY'){
+   enterPasswordRecovery();
+   return;
+ }
+ setTimeout(()=>refreshCustomerAuth(),0);
 });
+// Support recovery links where the Supabase client has already restored a recovery session
+// before the listener is attached.
+(async()=>{
+ const {data:{session}}=await sb.auth.getSession();
+ const recoveryHash=/(?:^|[&#])type=recovery(?:&|$)/i.test(location.hash);
+ if(session&&recoveryHash&&!passwordRecoveryMode)enterPasswordRecovery();
+})();
 
 
 
