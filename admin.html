@@ -38,38 +38,56 @@ button{display:inline-flex;align-items:center;justify-content:center;gap:7px;bac
 @media(max-width:600px){#msg{left:12px;right:12px;bottom:12px;max-width:none;padding:13px 14px}.box{gap:14px}}
 
 
-/* V6 visual polish: consistent admin portal return link and controls */
-.sfoot a[href="index.html"]{display:inline-flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid #5b4b3c;border-radius:10px;background:#372d24;color:#fff3e5;font-weight:600;transition:background .18s ease,border-color .18s ease,transform .18s ease}
-.sfoot a[href="index.html"]::before{content:'↗';display:inline-grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#4a3a2c;color:#f1bd94;font-size:1rem}
-.sfoot a[href="index.html"]:hover{background:#49392c;border-color:#98704f;color:#fff8ed;transform:translateY(-1px)}
-.sfoot a[href="index.html"]:focus-visible{outline:3px solid #e2ad83;outline-offset:3px}
-@media(max-width:760px){.sfoot a[href="index.html"]{min-height:46px}}
+/* Studio Experience V3 — artist operations workspace */
+:root{--paper:#f6f3ed;--panel:#fffefa;--panel-soft:#f3ebe0;--accent:#a65d38;--accent-dark:#83442a;--line:#dfd5c7;--radius:15px}
+body{background:#f6f3ed}
+.shell{grid-template-columns:266px minmax(0,1fr)}
+aside{background:linear-gradient(180deg,#241f1b 0%,#352a24 100%);box-shadow:5px 0 35px #25191018;padding:30px 17px}
+.brand{font-size:1.47rem;letter-spacing:-.03em;border-bottom:1px solid #58483b;padding-bottom:25px;margin-bottom:2px}
+.brand small{letter-spacing:.18em;color:#dfb48e}
+#nav button{border-radius:10px;padding:12px 15px;min-height:48px;font-weight:600;color:#ddcec0}
+#nav button:hover{background:#47382e}
+#nav button[aria-current=page]{background:#634634;color:#fff4e8;box-shadow:inset 3px 0 #dca67d}
+.sfoot{border-top:1px solid #59493c;padding-top:17px}
+.main{max-width:1750px;margin:auto;padding:clamp(24px,3.2vw,48px) clamp(20px,3.4vw,56px) 70px}
+.top{border-bottom:1px solid #dfd5c7;padding-bottom:22px;margin-bottom:25px;align-items:end}
+.top::after{content:'STUDIO WORKSPACE';margin-left:auto;font-size:.73rem;letter-spacing:.17em;font-weight:700;color:#8f735e}
+.top h1{font-size:clamp(2rem,3.5vw,3.1rem);letter-spacing:-.035em}
+.attention-panel{border-left:0;padding:27px;border-radius:18px;background:#fffcf8;box-shadow:0 14px 35px #4029180a}
+.attention-grid{gap:14px}
+.attention-link{padding:18px 20px;border-radius:12px;min-height:85px}
+.attention-link strong{font-size:1.85rem}
+.tiles{gap:16px}
+.tile{border-radius:15px;padding:24px;min-height:135px;box-shadow:0 9px 30px #4932220b}
+.tile b{font-size:2.75rem}
+.tile span{font-size:.94rem;color:#605448}
+.card{border-radius:15px;box-shadow:0 10px 27px #4431200a}
+.filters{background:#fffefa;padding:16px;border:1px solid var(--line);border-radius:15px;align-items:end}
+#olist .item{border-radius:12px;padding:18px 17px}
+.order-detail{border-radius:16px}
+.payment-summary{background:#f7efe4}
+#view .message-layout>.card, #view .message-layout .card{box-shadow:0 10px 30px #4431200b}
+#view .message-layout form{padding-top:12px;border-top:1px solid var(--line)}
+@media(max-width:900px){.top::after{display:none}.attention-grid{grid-template-columns:1fr}.attention-link{min-height:65px}}
+@media(max-width:650px){.main{padding:18px 13px 40px}.attention-panel{padding:18px}.filters{padding:12px}.tile{min-height:100px;padding:17px}}
 
-/* V7 order-linked chat and progress-update interface */
-.admin-chat-card{padding:clamp(16px,2.5vw,26px);border-radius:18px;background:linear-gradient(180deg,#fffdf9,#fbf5ec);box-shadow:0 16px 40px rgba(57,41,26,.06)}
-.admin-chat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line)}
-.admin-chat-kicker{font-size:.7rem;letter-spacing:.15em;font-weight:700;color:var(--accent);margin-bottom:6px}
-.admin-chat-head h2{margin-bottom:6px;color:var(--ink)}
-.admin-chat-badge{flex:0 0 auto;padding:7px 11px;border-radius:999px;background:var(--ok-bg);color:var(--ok);font-size:.76rem;font-weight:700}
-.admin-chat-note{margin:14px 0;padding:12px 14px;background:var(--panel-soft);border-left:3px solid var(--accent);border-radius:0 9px 9px 0;color:#5f4d3d;font-size:.9rem;line-height:1.6}
-.admin-thread{display:flex;flex-direction:column;gap:12px;min-height:180px;max-height:min(56vh,560px);overflow:auto;padding:15px;background:#f0e7dc;border:1px solid #e2d3c0;border-radius:14px;overscroll-behavior:contain;scroll-behavior:smooth}
-.admin-chat-message{width:fit-content;max-width:min(88%,650px);padding:12px 14px;border:1px solid #e0d2c1;border-radius:15px 15px 15px 5px;background:#fffdf9;color:#30261f;box-shadow:0 3px 10px rgba(51,36,22,.04);overflow-wrap:anywhere}
-.admin-chat-message.mine{align-self:flex-end;border-radius:15px 15px 5px 15px;background:#e4eee2;border-color:#c7d9c3;color:#273b29}
-.admin-chat-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin-bottom:6px;font-size:.78rem;color:#72553f}
-.admin-chat-meta strong{color:#68442d}.admin-chat-meta time{font-size:.72rem;color:#7e746a}
-.admin-chat-body{font-size:.95rem;line-height:1.65;overflow-wrap:anywhere}
-.admin-chat-empty{margin:auto;text-align:center;color:#6d6054;padding:18px}.admin-chat-empty strong{display:block;color:#392c22;margin-bottom:5px}.admin-chat-empty p{font-size:.88rem}
-.admin-chat-presets{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:15px 0}
-.admin-chat-presets strong{font-size:.8rem;color:var(--muted);width:100%;margin-bottom:2px}
-.admin-chat-presets button{min-height:35px;padding:7px 11px;border-radius:999px;background:var(--panel);color:#71472f;border:1px solid #d9c6b2;box-shadow:none;font-size:.78rem}
-.admin-chat-presets button:hover{background:var(--panel-soft);color:#57351f;border-color:#b9825d}
-.admin-chat-compose{max-width:none;width:100%;padding:0;border:0;background:transparent;box-shadow:none;gap:10px}
-.admin-chat-compose label{color:var(--ink);font-weight:700}.admin-chat-compose textarea{min-height:100px;background:#fffdf9;border-color:#d9c7b4;border-radius:11px;line-height:1.6}
-.admin-chat-compose-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-chat-compose-foot small{color:var(--muted);font-size:.78rem;line-height:1.5;max-width:40ch}
-.message-thread-card{border-radius:14px!important;transition:border-color .16s,transform .16s,box-shadow .16s}.message-thread-card:hover{border-color:#c38b65!important;transform:translateY(-1px);box-shadow:0 7px 20px rgba(57,41,26,.07)}
-@media(max-width:600px){.admin-chat-head{flex-direction:column}.admin-chat-badge{align-self:flex-start}.admin-thread{padding:10px;min-height:150px}.admin-chat-message{max-width:95%;padding:11px 12px}.admin-chat-compose-foot{align-items:stretch;flex-direction:column}.admin-chat-compose-foot button{width:100%}.admin-chat-meta{flex-direction:column;gap:1px}.admin-chat-presets button{font-size:.76rem}}
-@media(prefers-reduced-motion:reduce){.admin-thread,.message-thread-card{scroll-behavior:auto;transition:none}}
 
+/* Admin realtime notification center */
+#adminNotificationArea{position:relative;margin-left:auto;flex:0 0 auto}
+#adminNotificationBell{display:inline-flex;align-items:center;gap:8px;background:#fffefa;color:var(--ink);border:1px solid var(--line);box-shadow:none;min-height:42px;padding:9px 13px}
+#adminNotificationCount{display:none;align-items:center;justify-content:center;min-width:19px;height:19px;padding:0 5px;border-radius:999px;background:var(--accent);color:white;font-size:.72rem}
+#adminNotificationCount.show{display:inline-flex}
+#adminNotificationPanel{position:absolute;z-index:1000;top:calc(100% + 10px);right:0;width:min(390px,calc(100vw - 28px));max-height:min(70vh,560px);overflow:auto;background:#fffefa;color:var(--ink);border:1px solid var(--line);border-radius:15px;box-shadow:0 20px 55px #30201426;padding:14px}
+.admin-notif-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:3px 2px 12px;border-bottom:1px solid var(--line)}
+.admin-notif-head strong{font:600 1.05rem var(--serif)}
+.admin-notif-head button{padding:5px 8px;min-height:32px;background:transparent;color:var(--accent-dark);border:0;box-shadow:none;font-size:.78rem}
+.admin-notif-list{display:grid;gap:7px;padding-top:9px}
+.admin-notif-item{display:grid;gap:4px;width:100%;text-align:left;padding:12px;background:#f8f2e9;color:var(--ink);border:1px solid transparent;box-shadow:none;min-height:0}
+.admin-notif-item:hover{background:#f0e3d4;color:var(--ink);border-color:#dfc8b1}
+.admin-notif-item.unread{border-color:#d5a17d;background:#fff7ef}
+.admin-notif-item strong{font-size:.9rem}.admin-notif-item span{font-size:.84rem;font-weight:400;line-height:1.45;overflow-wrap:anywhere}.admin-notif-item small,.admin-notif-empty{font-size:.75rem;color:var(--muted)}
+.admin-notif-empty{text-align:center;padding:20px 8px}
+@media(max-width:650px){#adminNotificationArea{margin-left:auto}#adminNotificationBell{padding:9px 10px;font-size:.84rem}#adminNotificationPanel{position:fixed;top:76px;left:12px;right:12px;width:auto;max-height:calc(100dvh - 100px)}.top{flex-wrap:wrap}}
 </style></head>
 <body>
 <p id="load" role="status">Loading...</p>
@@ -80,7 +98,9 @@ button{display:inline-flex;align-items:center;justify-content:center;gap:7px;bac
 <div id="app" class="shell" hidden>
  <aside id="side"><div class="brand">Art Commission <i>PH</i><small>Admin</small></div><nav id="nav" aria-label="Admin sections"></nav>
   <div class="sfoot"><a href="index.html">View public website</a><button type="button" class="g" id="out">Log out</button></div></aside>
- <div class="main"><div class="top"><button type="button" id="menu" aria-label="Open navigation menu" aria-expanded="false">Menu</button><h1 id="ttl"></h1></div><div id="view"></div></div></div>
+ <div class="main"><div class="top"><button type="button" id="menu" aria-label="Open navigation menu" aria-expanded="false">Menu</button><h1 id="ttl"></h1>
+<div id="adminNotificationArea" hidden><button type="button" id="adminNotificationBell" aria-expanded="false">Notifications <span id="adminNotificationCount">0</span></button><div id="adminNotificationPanel" hidden role="region" aria-label="Admin notifications"><div class="admin-notif-head"><strong>Notifications</strong><button type="button" id="adminMarkAllRead">Mark all read</button></div><div class="admin-notif-list" id="adminNotificationList"><p class="admin-notif-empty">Loading notifications…</p></div></div></div>
+</div><div id="view"></div></div></div>
 <div id="msg" hidden role="status"></div>
 <dialog id="md"><form method="dialog"><h2 id="mt"></h2><p id="mp" class="mute"></p><textarea id="mi" rows="3" hidden aria-label="Details"></textarea>
  <div class="acts"><button value="no" class="g" id="mn">Cancel</button><button value="yes" id="my">Confirm</button></div></form></dialog>
@@ -105,13 +125,69 @@ function ask(t,p,yes='Confirm',input=false,no='Cancel'){return new Promise(res=>
 async function shrink(file){const b=await createImageBitmap(file);const s=Math.min(1,1000/Math.max(b.width,b.height));const c=document.createElement('canvas');c.width=Math.round(b.width*s);c.height=Math.round(b.height*s);c.getContext('2d').drawImage(b,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/webp',.82))}
 
 /* access: needs a session AND a row in the admins table (the database checks this again on every action) */
-async function guard(){const {data:{session}}=await sb.auth.getSession();if(!session)return false;const {data}=await sb.rpc('is_admin');if(data===true)return true;await sb.auth.signOut();return 'denied'}
+async function guard(){
+ const {data:{session},error:sessionError}=await sb.auth.getSession();
+ if(sessionError)return 'error';
+ if(!session)return false;
+ const {data,error}=await sb.rpc('is_admin');
+ if(error)return 'error';
+ if(data===true)return true;
+ // Do not log out a customer who merely visits the admin.html URL.
+ return 'denied';
+}
 async function start(){$('#load').hidden=false;$('#login').hidden=$('#app').hidden=true;const g=await guard();$('#load').hidden=true;
- if(g===true){$('#app').hidden=false;await boot()}else{$('#login').hidden=false;$('#lerr').textContent=g=='denied'?'This account is not an administrator.':''}}
+ if(g===true){$('#app').hidden=false;await boot();await startAdminNotifications()}else{await stopAdminNotifications();$('#login').hidden=false;$('#lerr').textContent=g==='denied'?'Access denied. Customer accounts cannot open the administrator dashboard.':' '+(g==='error'?'Unable to verify access. Please retry.':'')}}
 $('#go').onclick=async()=>{const b=$('#go');b.disabled=true;b.textContent='Logging in...';const {error}=await sb.auth.signInWithPassword({email:$('#em').value,password:$('#pw').value});b.disabled=false;b.textContent='Log in';
  if(error){const m=String(error.message||'');$('#lerr').textContent=/rate limit|too many requests/i.test(m)?'Too many authentication attempts. Wait a while before trying again.':/invalid login credentials/i.test(m)?'The email or password is incorrect. Check both fields and try again.':'Login failed: '+m;return}start()};
 $('#out').onclick=async()=>{if(await ask('Are you sure you want to log out?','You will need to log in again to manage orders.','Yes, Log Out',false,'No, Stay')){await sb.auth.signOut();$('#pw').value='';start()}};
 $('#menu').onclick=()=>{const open=$('#side').classList.toggle('open');$('#menu').setAttribute('aria-expanded',String(open))};
+
+
+let adminNotificationChannel=null,adminNotificationRows=[];
+const adminNotifTime=v=>v?new Date(v).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'}):'';
+function renderAdminNotifications(){
+ const unread=adminNotificationRows.filter(n=>!n.read_at).length, badge=$('#adminNotificationCount'),list=$('#adminNotificationList');
+ badge.textContent=unread>99?'99+':String(unread);badge.classList.toggle('show',unread>0);
+ if(!adminNotificationRows.length){list.innerHTML='<p class="admin-notif-empty">No new activity. New orders and client messages will appear here.</p>';return}
+ list.innerHTML=adminNotificationRows.map(n=>`<button type="button" class="admin-notif-item ${n.read_at?'':'unread'}" data-notification-id="${esc(n.id)}" data-order-id="${esc(n.order_id||'')}" data-kind="${esc(n.kind||'')}"><strong>${esc(n.title)}</strong><span>${esc(n.body)}</span><small>${adminNotifTime(n.created_at)}${n.read_at?' · Read':' · Unread'}</small></button>`).join('');
+}
+async function loadAdminNotifications(){
+ const {data,error}=await sb.from('notifications').select('id,title,body,kind,order_id,read_at,created_at').order('created_at',{ascending:false}).limit(50);
+ if(error){$('#adminNotificationList').innerHTML='<p class="admin-notif-empty">Notifications unavailable. Check the notification SQL migration and permissions.</p>';return}
+ adminNotificationRows=data||[];renderAdminNotifications();
+}
+async function startAdminNotifications(){
+ $('#adminNotificationArea').hidden=false;await loadAdminNotifications();
+ if(adminNotificationChannel)await sb.removeChannel(adminNotificationChannel);
+ const {data:{user}}=await sb.auth.getUser();if(!user)return;
+ adminNotificationChannel=sb.channel('admin-notifications-'+user.id)
+ .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+user.id},p=>{if(!adminNotificationRows.some(n=>n.id===p.new.id)){adminNotificationRows.unshift(p.new);adminNotificationRows=adminNotificationRows.slice(0,50);renderAdminNotifications()}})
+ .on('postgres_changes',{event:'UPDATE',schema:'public',table:'notifications',filter:'user_id=eq.'+user.id},p=>{adminNotificationRows=adminNotificationRows.map(n=>n.id===p.new.id?p.new:n);renderAdminNotifications()})
+ .subscribe();
+}
+async function stopAdminNotifications(){if(adminNotificationChannel){await sb.removeChannel(adminNotificationChannel);adminNotificationChannel=null}adminNotificationRows=[];$('#adminNotificationArea').hidden=true;$('#adminNotificationPanel').hidden=true}
+async function adminMarkRead(id){
+ const n=adminNotificationRows.find(x=>x.id===id);if(!n||n.read_at)return;
+ const {data,error}=await sb.from('notifications').update({read_at:new Date().toISOString()}).eq('id',id).select('id,read_at').maybeSingle();
+ if(error){say('Could not mark notification as read: '+error.message,1);return}
+ n.read_at=data?.read_at||new Date().toISOString();renderAdminNotifications();
+}
+async function adminMarkAllRead(){
+ const ids=adminNotificationRows.filter(n=>!n.read_at).map(n=>n.id);if(!ids.length)return;
+ const {error}=await sb.from('notifications').update({read_at:new Date().toISOString()}).in('id',ids);
+ if(error){say('Could not mark notifications as read: '+error.message,1);return}
+ const now=new Date().toISOString();adminNotificationRows=adminNotificationRows.map(n=>n.read_at?n:{...n,read_at:now});renderAdminNotifications();
+}
+$('#adminNotificationBell').addEventListener('click',async()=>{const p=$('#adminNotificationPanel'),open=p.hidden;p.hidden=!open;$('#adminNotificationBell').setAttribute('aria-expanded',String(open));if(open)await loadAdminNotifications()});
+$('#adminMarkAllRead').addEventListener('click',adminMarkAllRead);
+$('#adminNotificationList').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-notification-id]');if(!b)return;
+ const n=adminNotificationRows.find(x=>x.id===b.dataset.notificationId);await adminMarkRead(b.dataset.notificationId);
+ $('#adminNotificationPanel').hidden=true;$('#adminNotificationBell').setAttribute('aria-expanded','false');
+ if(n?.kind==='new_message'||n?.kind==='chat_message'){tab='messages';messageOrderId=n.order_id||null}
+ else{tab='orders';sel=null}
+ await render();
+});
 
 async function boot(){if(!cats.length)cats=(await sb.from('categories').select('*').order('sort')).data||[];render()}
 async function render(){$('#side').classList.remove('open');$('#ttl').textContent=TABS.find(t=>t[0]==tab)[1];
@@ -173,11 +249,9 @@ async messages(){
    <p style="margin-top:6px">${esc(t.last_message?.body||'No messages yet').slice(0,140)}</p>
    <small class="mute">${t.last_message?.created_at?dt(t.last_message.created_at):''}</small>
   </button>`;
- const convo=chosen?`<div class="card admin-chat-card"><div class="admin-chat-head"><div><p class="admin-chat-kicker">ORDER CONVERSATION</p><h2>${esc(chosen.order_no)} · ${esc(chosen.customer_name||'Customer')}</h2><p class="mute">${esc(chosen.customer_email||'This order is not linked to a customer account.')}</p></div><span class="admin-chat-badge">Private thread</span></div>
-  <div class="admin-chat-note">Use this conversation for questions, additional requests, and artwork progress updates. Messages stay attached to this order.</div>
-  <div class="admin-thread" aria-live="polite" aria-relevant="additions text">${messages.length?messages.map(m=>`<article class="admin-chat-message ${m.sender_role==='admin'?'mine':'theirs'}"><div class="admin-chat-meta"><strong>${m.sender_role==='admin'?'You · Admin':'Customer'}</strong><time datetime="${esc(m.created_at)}">${dt(m.created_at)}</time></div><div class="admin-chat-body">${esc(m.body).replace(/\n/g,'<br>')}</div></article>`).join(''):'<div class="admin-chat-empty"><strong>No messages yet</strong><p>Send a welcome note or share the first artwork progress update.</p></div>'}</div>
-  <div class="admin-chat-presets"><strong>Progress update templates</strong><button type="button" data-chat-template="Progress update: I’ve started working on your artwork. I’ll share another update as it develops.">Started artwork</button><button type="button" data-chat-template="Progress update: The initial sketch is ready. Please message me if you’d like to discuss any details before I continue.">Sketch ready</button><button type="button" data-chat-template="Progress update: Your artwork is currently in progress. Thank you for your patience; I’ll keep you updated here.">In progress</button><button type="button" data-chat-template="Progress update: Your artwork is complete. I’ll message you here with the next payment or delivery steps.">Artwork complete</button><button type="button" data-chat-template="Progress update: Your artwork is ready for delivery or dispatch. I’ll confirm the delivery details here.">Ready for delivery</button></div>
-  <form id="adminMessageForm" data-order-id="${esc(chosen.order_id)}" class="admin-chat-compose"><label for="adminChatBody">Message to customer<textarea id="adminChatBody" name="body" rows="4" required maxlength="2000" placeholder="Reply to their question, confirm an addition, or share artwork progress…"></textarea></label><div class="admin-chat-compose-foot"><small>Sending here adds the message to this order’s customer chat.</small><button type="submit">Send message ↗</button></div></form>
+ const convo=chosen?`<div class="card"><h2>${esc(chosen.order_no)} · ${esc(chosen.customer_name||'Customer')}</h2><p class="mute">${esc(chosen.customer_email||'This order is not linked to a customer account.')}</p>
+  <div class="admin-thread" style="display:grid;gap:10px;margin:16px 0;max-height:480px;overflow:auto">${messages.length?messages.map(m=>`<div style="max-width:90%;justify-self:${m.sender_role==='admin'?'end':'start'};background:${m.sender_role==='admin'?'var(--panel-soft)':'var(--info-bg)'};color:var(--ink);padding:12px 14px;border-radius:10px;overflow-wrap:anywhere"><small class="mute">${m.sender_role==='admin'?'Jake · Admin':'Customer'} · ${dt(m.created_at)}</small><p>${esc(m.body).replace(/\\n/g,'<br>')}</p></div>`).join(''):'<p class="mute">No messages in this conversation yet.</p>'}</div>
+  <form id="adminMessageForm" data-order-id="${esc(chosen.order_id)}" style="display:grid;gap:10px"><label>Reply to customer<textarea name="body" rows="4" required maxlength="2000" placeholder="Write your reply..."></textarea></label><button type="submit">Send reply</button></form>
  </div>`:'<div class="empty">Select a conversation to read messages and reply. New customer messages will appear here.</div>';
  $('#view').innerHTML=`<div class="message-layout" style="display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.4fr);gap:16px;align-items:start">
   <div><h2>Customer conversations (${threads.length})</h2><p class="mute" style="margin-bottom:12px">Unread counts update when the inbox is refreshed or a conversation is opened.</p>${threads.length?threads.map(threadCard).join(''):'<div class="empty">No customer messages yet.</div>'}</div>
@@ -193,9 +267,9 @@ async pricing(){const {data,error}=await sb.from('options').select('*').order('c
  $('#view').innerHTML=cats.map(c=>{const l=(data||[]).filter(o=>o.category==c.id);return `<div class="card"><h3>${esc(c.name)}</h3>${l.map(row).join('')||'<p class="mute">No services yet.</p>'}</div>`}).join('')+`<div class="card"><h3>Add a service or size</h3>${row({category:cats[0]?.id,label:''})}</div>`},
 
 async gallery(){const {data,error}=await sb.from('artworks').select('*').order('created_at',{ascending:false});if(error)throw error;
- const row=a=>`<div class="card row" style="display:grid" data-k="art" data-id="${a.id}" data-path="${esc(a.image_path)}"><img src="${esc(pub(a.image_path))}" alt="${esc(a.title)}" loading="lazy"><div>${B(a.published?'Published':'Hidden')} ${B(a.for_sale?(a.is_sold?'Sold':'For sale'):'Portfolio only')}</div><label>Category${catSel(a.category,'class="c"')}</label><label>Title<input class="t" value="${esc(a.title)}" maxlength="100"></label><label>Description<input class="d" value="${esc(a.description)}" maxlength="1000"></label><label>Artwork size<input class="size" value="${esc(a.size||'')}" maxlength="100" placeholder="e.g. A4 / 8 × 10 in"></label><label>Sale price in PHP<input class="sale-price" type="number" min="1" step="0.01" value="${a.price??''}" placeholder="Blank = not for sale"></label><label><span><input class="pub" type="checkbox" ${a.published?'checked':''}> Show on public gallery</span></label><label><span><input class="for-sale" type="checkbox" ${a.for_sale?'checked':''}> Offer this artwork for sale</span></label><label><span><input class="is-sold" type="checkbox" ${a.is_sold?'checked':''}> Mark as sold / unavailable</span></label><span class="acts" style="justify-content:flex-start"><button data-save>Save artwork details</button><button class="d" data-del>Delete</button></span></div>`;
- $('#view').innerHTML=`<div class="card" style="max-width:620px;display:grid;gap:10px"><h3>Add artwork / shop item</h3><p class="mute">To sell a sample artwork, enter its size and price, then tick “Offer this artwork for sale”. Buyers can open its centered detail view, add it to cart, and place an order.</p><label>Category${catSel(cats[0]?.id,'id="aC"')}</label><label>Title<input id="aT" maxlength="100" required></label><label>Description<textarea id="aD" maxlength="1000" rows="3" placeholder="Medium, condition, included frame, and other details"></textarea></label><label>Artwork size<input id="aSize" maxlength="100" placeholder="e.g. A4 / 8 × 10 in"></label><label>Sale price in PHP<input id="aPrice" type="number" min="1" step="0.01" placeholder="Blank = portfolio only"></label><label><span><input id="aForSale" type="checkbox"> Offer this artwork for sale</span></label><label>Photo (compressed automatically)<input id="aF" type="file" accept="image/*" required></label><img id="aP" alt="Artwork preview" hidden style="max-width:220px;max-height:240px;object-fit:contain;border-radius:8px"><button id="addArt">Add artwork</button></div>
- <h2 style="margin-top:20px">Gallery and shop inventory (${(data||[]).length})</h2>${(data||[]).length?`<div class="gal">${data.map(row).join('')}</div>`:'<div class="empty">No artworks yet. Upload your first one above.</div>'}`;
+ const row=a=>`<div class="card row" style="display:grid" data-k="art" data-id="${a.id}" data-path="${esc(a.image_path)}"><img src="${esc(pub(a.image_path))}" alt="${esc(a.title)}" loading="lazy"><div>${B(a.published?'Published':'Hidden')}</div><label>Category${catSel(a.category,'class="c"')}</label><label>Title<input class="t" value="${esc(a.title)}"></label><label>Description<input class="d" value="${esc(a.description)}"></label><label><span><input class="pub" type="checkbox" ${a.published?'checked':''}> Show on public gallery</span></label><span class="acts" style="justify-content:flex-start"><button data-save>Save</button><button class="d" data-del>Delete</button></span></div>`;
+ $('#view').innerHTML=`<div class="card" style="max-width:560px;display:grid;gap:10px"><h3>Add artwork</h3><label>Category${catSel(cats[0]?.id,'id="aC"')}</label><label>Title<input id="aT" maxlength="100"></label><label>Description (optional)<input id="aD" maxlength="300"></label><label>Photo (compressed automatically)<input id="aF" type="file" accept="image/*"></label><img id="aP" alt="" hidden style="max-width:200px;border-radius:4px"><button id="addArt">Add artwork</button></div>
+ <h2 style="margin-top:20px">Your artworks (${(data||[]).length})</h2>${(data||[]).length?`<div class="gal">${data.map(row).join('')}</div>`:'<div class="empty">No artworks yet. Upload your first one above.</div>'}`;
  $('#aF').onchange=e=>{const f=e.target.files[0];$('#aP').hidden=!f;if(f)$('#aP').src=URL.createObjectURL(f)}},
 
 async reviews(){const r=await sb.from('reviews').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;L=r.data||[];
@@ -228,12 +302,11 @@ function drawDet(){const i=L.findIndex(o=>o.id==sel);const el=$('#odet');if(i<0)
  <div class="sec"><h3>Reply to client</h3><label>Message shown on their Track order page<input class="rp" value="${esc(o.reply)}" maxlength="1000"></label><button class="g" data-act="reply" style="margin-top:8px">Save client reply</button></div>
  ${o.status=='Cancelled'?`<div class="sec"><h3>Cancelled</h3><p>${esc(o.cancel_reason)} | Refund ${peso(s.refund_due)} ${B(s.refund_status)}${s.refund_ref?' ref '+esc(s.refund_ref):''}</p>${s.refund_status=='Pending'?`<div class="row"><label>GCash refund reference<input class="rr"></label><span class="mute">Send to ${esc(o.refund_gcash||'(no number given)')}</span><button data-act="refunded">Confirm refund sent</button></div>`:''}</div>`:o.status=='Delivered'||done?'':`<details ${o.cancel_requested_at?'open':''}><summary>Cancel order (cannot be undone)</summary><div class="row"><label>Reason<input class="cr" value="${esc(o.cancel_requested_at?o.cancel_reason:'')}"></label><label>Refund amount (max ${peso(+s.down_verified+ +s.final_verified)})<input class="rf" type="number" min="0" step="0.01" value="0"></label><button class="d" data-act="cancel">Confirm cancellation</button>${o.cancel_requested_at?'<button class="g" data-act="decline">Decline cancellation request</button>':''}</div></details>`}</div>`}
 
-async function addArt(){const f=$('#aF').files[0],title=$('#aT').value.trim(),forSale=$('#aForSale').checked,priceRaw=$('#aPrice').value.trim();if(!f||!title)return say('Add a title and a photo.',1);if(forSale&&!(Number(priceRaw)>0))return say('Enter a sale price above zero before offering this artwork for sale.',1);
+async function addArt(){const f=$('#aF').files[0],title=$('#aT').value.trim();if(!f||!title)return say('Add a title and a photo.',1);
  const b=$('#addArt');b.disabled=true;b.textContent='Uploading...';const path=crypto.randomUUID()+'.webp';
  const u=await sb.storage.from('artworks').upload(path,await shrink(f),{contentType:'image/webp'});
  if(u.error){say(u.error.message,1);b.disabled=false;b.textContent='Add artwork';return}
- const rec={category:$('#aC').value,title,description:$('#aD').value.trim()||null,size:$('#aSize').value.trim()||null,price:priceRaw===''?null:Number(priceRaw),for_sale:forSale,is_sold:false,image_path:path,published:true};
- if(ok(await sb.from('artworks').insert(rec),'Artwork added to gallery'+(forSale?' and shop.':'.')))render();else{await sb.storage.from('artworks').remove([path]);b.disabled=false;b.textContent='Add artwork'}}
+ if(ok(await sb.from('artworks').insert({category:$('#aC').value,title,description:$('#aD').value.trim()||null,image_path:path}),'Artwork added.'))render();else{b.disabled=false;b.textContent='Add artwork'}}
 
 $('#nav').onclick=e=>{const t=e.target.dataset.t;if(t){tab=t;if(t!='orders'){F={q:'',st:'',pay:'',dm:'',ds:'',pre:''};sel=null}render()}};
 $('#view').oninput=e=>{const k=e.target.dataset.f;if(k){F[k]=e.target.value;drawList()}};
@@ -268,11 +341,10 @@ $('#view').onclick=async e=>{const b=e.target.closest('button');if(!b)return;con
  if('del' in d){if(!await ask('Delete this entry?',k=='art'?'The artwork and its image will be removed.':'Clients will no longer see this service.','Yes, delete'))return;if(k=='art')await sb.storage.from('artworks').remove([r.dataset.path]);if(ok(await sb.from(t).delete().eq('id',id),'Deleted.'))render();return}
  if('save' in d){let rec;
   if(k=='opt'){const p=q('.p').value;rec={category:q('.c').value,label:q('.l').value.trim(),price:p===''?null:+p};if(!rec.label)return say('Enter a service and size.',1);if(rec.price!=null&&(isNaN(rec.price)||rec.price<0))return say('Enter a valid price.',1)}
-  else{const price=q('.sale-price').value.trim(),forSale=q('.for-sale').checked;if(forSale&&!(Number(price)>0))return say('Enter a sale price above zero before offering this artwork for sale.',1);rec={category:q('.c').value,title:q('.t').value.trim(),description:q('.d').value.trim()||null,size:q('.size').value.trim()||null,price:price===''?null:Number(price),for_sale:forSale,is_sold:q('.is-sold').checked,published:q('.pub').checked};if(!rec.title)return say('Enter a title.',1)}
+  else{rec={category:q('.c').value,title:q('.t').value.trim(),description:q('.d').value.trim()||null,published:q('.pub').checked};if(!rec.title)return say('Enter a title.',1)}
   b.disabled=true;const res=id?await sb.from(t).update(rec).eq('id',id):await sb.from(t).insert(rec);b.disabled=false;
   if(ok(res,k=='opt'?'Price saved.':'Saved.')&&(!id||k=='art'))render()}};
 
-$('#view').addEventListener('click',e=>{const chip=e.target.closest('[data-chat-template]');if(!chip)return;const form=chip.closest('.admin-chat-card')?.querySelector('#adminMessageForm');const input=form?.querySelector('textarea[name="body"]');if(!input)return;input.value=chip.dataset.chatTemplate||'';input.focus();input.setSelectionRange(input.value.length,input.value.length)});
 $('#view').addEventListener('submit',async e=>{
  if(e.target.id!=='adminMessageForm')return;
  e.preventDefault();
