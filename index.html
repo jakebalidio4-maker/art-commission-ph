@@ -615,6 +615,60 @@ button,.btn,input,select,textarea{font-family:var(--sans)}
 .email-verification-panel input{background:#fff;color:#29231e;border:1px solid #cdbba7;width:100%;box-sizing:border-box}
 .email-verification-panel .btn{width:100%;margin-top:10px}
 @media(max-width:620px){.email-verification-panel{padding:20px 16px}}
+
+/* FIX: keep the commission request section and its heading from collapsing
+   into a narrow grid column when opened from a sample artwork dialog. */
+#supportSections > #order{
+  display:block !important;
+  width:100% !important;
+  max-width:1160px !important;
+  min-width:0 !important;
+  writing-mode:horizontal-tb !important;
+  margin-inline:auto !important;
+}
+#supportSections > #order > .section-kicker,
+#supportSections > #order > h2,
+#supportSections > #order > .lead,
+#supportSections > #order > #orderLoginNote,
+#supportSections > #order > #orderForm,
+#supportSections > #order > #orderMsg{
+  display:block;
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  writing-mode:horizontal-tb !important;
+  overflow-wrap:normal !important;
+  word-break:normal !important;
+  white-space:normal !important;
+}
+#supportSections > #order > h2{
+  font-size:clamp(2.15rem,5vw,3.5rem) !important;
+  line-height:1.12 !important;
+  letter-spacing:-.025em;
+  margin:0 0 .7rem;
+}
+#supportSections > #order > .section-kicker{margin-bottom:12px}
+#supportSections > #order > .lead{margin:0 0 24px;max-width:68ch}
+#supportSections > #order > #orderForm{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:18px;
+  padding:clamp(20px,3vw,34px);
+  margin:0;
+}
+#supportSections > #order .two{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+}
+#supportSections > #order input,
+#supportSections > #order select,
+#supportSections > #order textarea{min-width:0}
+@media(max-width:640px){
+  #supportSections > #order{padding:24px 16px !important}
+  #supportSections > #order .two{grid-template-columns:minmax(0,1fr)}
+  #supportSections > #order > h2{font-size:clamp(2rem,9vw,2.8rem) !important}
+}
+
 </style>
 <style>
 /* V4 — discrete public / authentication / customer workspace screens */
