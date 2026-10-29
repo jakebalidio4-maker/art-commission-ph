@@ -37,6 +37,39 @@ button{display:inline-flex;align-items:center;justify-content:center;gap:7px;bac
 .mute{line-height:1.55}
 @media(max-width:600px){#msg{left:12px;right:12px;bottom:12px;max-width:none;padding:13px 14px}.box{gap:14px}}
 
+
+/* V6 visual polish: consistent admin portal return link and controls */
+.sfoot a[href="index.html"]{display:inline-flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid #5b4b3c;border-radius:10px;background:#372d24;color:#fff3e5;font-weight:600;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+.sfoot a[href="index.html"]::before{content:'↗';display:inline-grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#4a3a2c;color:#f1bd94;font-size:1rem}
+.sfoot a[href="index.html"]:hover{background:#49392c;border-color:#98704f;color:#fff8ed;transform:translateY(-1px)}
+.sfoot a[href="index.html"]:focus-visible{outline:3px solid #e2ad83;outline-offset:3px}
+@media(max-width:760px){.sfoot a[href="index.html"]{min-height:46px}}
+
+/* V7 order-linked chat and progress-update interface */
+.admin-chat-card{padding:clamp(16px,2.5vw,26px);border-radius:18px;background:linear-gradient(180deg,#fffdf9,#fbf5ec);box-shadow:0 16px 40px rgba(57,41,26,.06)}
+.admin-chat-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.admin-chat-kicker{font-size:.7rem;letter-spacing:.15em;font-weight:700;color:var(--accent);margin-bottom:6px}
+.admin-chat-head h2{margin-bottom:6px;color:var(--ink)}
+.admin-chat-badge{flex:0 0 auto;padding:7px 11px;border-radius:999px;background:var(--ok-bg);color:var(--ok);font-size:.76rem;font-weight:700}
+.admin-chat-note{margin:14px 0;padding:12px 14px;background:var(--panel-soft);border-left:3px solid var(--accent);border-radius:0 9px 9px 0;color:#5f4d3d;font-size:.9rem;line-height:1.6}
+.admin-thread{display:flex;flex-direction:column;gap:12px;min-height:180px;max-height:min(56vh,560px);overflow:auto;padding:15px;background:#f0e7dc;border:1px solid #e2d3c0;border-radius:14px;overscroll-behavior:contain;scroll-behavior:smooth}
+.admin-chat-message{width:fit-content;max-width:min(88%,650px);padding:12px 14px;border:1px solid #e0d2c1;border-radius:15px 15px 15px 5px;background:#fffdf9;color:#30261f;box-shadow:0 3px 10px rgba(51,36,22,.04);overflow-wrap:anywhere}
+.admin-chat-message.mine{align-self:flex-end;border-radius:15px 15px 5px 15px;background:#e4eee2;border-color:#c7d9c3;color:#273b29}
+.admin-chat-meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;margin-bottom:6px;font-size:.78rem;color:#72553f}
+.admin-chat-meta strong{color:#68442d}.admin-chat-meta time{font-size:.72rem;color:#7e746a}
+.admin-chat-body{font-size:.95rem;line-height:1.65;overflow-wrap:anywhere}
+.admin-chat-empty{margin:auto;text-align:center;color:#6d6054;padding:18px}.admin-chat-empty strong{display:block;color:#392c22;margin-bottom:5px}.admin-chat-empty p{font-size:.88rem}
+.admin-chat-presets{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin:15px 0}
+.admin-chat-presets strong{font-size:.8rem;color:var(--muted);width:100%;margin-bottom:2px}
+.admin-chat-presets button{min-height:35px;padding:7px 11px;border-radius:999px;background:var(--panel);color:#71472f;border:1px solid #d9c6b2;box-shadow:none;font-size:.78rem}
+.admin-chat-presets button:hover{background:var(--panel-soft);color:#57351f;border-color:#b9825d}
+.admin-chat-compose{max-width:none;width:100%;padding:0;border:0;background:transparent;box-shadow:none;gap:10px}
+.admin-chat-compose label{color:var(--ink);font-weight:700}.admin-chat-compose textarea{min-height:100px;background:#fffdf9;border-color:#d9c7b4;border-radius:11px;line-height:1.6}
+.admin-chat-compose-foot{display:flex;align-items:center;justify-content:space-between;gap:12px}.admin-chat-compose-foot small{color:var(--muted);font-size:.78rem;line-height:1.5;max-width:40ch}
+.message-thread-card{border-radius:14px!important;transition:border-color .16s,transform .16s,box-shadow .16s}.message-thread-card:hover{border-color:#c38b65!important;transform:translateY(-1px);box-shadow:0 7px 20px rgba(57,41,26,.07)}
+@media(max-width:600px){.admin-chat-head{flex-direction:column}.admin-chat-badge{align-self:flex-start}.admin-thread{padding:10px;min-height:150px}.admin-chat-message{max-width:95%;padding:11px 12px}.admin-chat-compose-foot{align-items:stretch;flex-direction:column}.admin-chat-compose-foot button{width:100%}.admin-chat-meta{flex-direction:column;gap:1px}.admin-chat-presets button{font-size:.76rem}}
+@media(prefers-reduced-motion:reduce){.admin-thread,.message-thread-card{scroll-behavior:auto;transition:none}}
+
 </style></head>
 <body>
 <p id="load" role="status">Loading...</p>
@@ -140,9 +173,11 @@ async messages(){
    <p style="margin-top:6px">${esc(t.last_message?.body||'No messages yet').slice(0,140)}</p>
    <small class="mute">${t.last_message?.created_at?dt(t.last_message.created_at):''}</small>
   </button>`;
- const convo=chosen?`<div class="card"><h2>${esc(chosen.order_no)} · ${esc(chosen.customer_name||'Customer')}</h2><p class="mute">${esc(chosen.customer_email||'This order is not linked to a customer account.')}</p>
-  <div class="admin-thread" style="display:grid;gap:10px;margin:16px 0;max-height:480px;overflow:auto">${messages.length?messages.map(m=>`<div style="max-width:90%;justify-self:${m.sender_role==='admin'?'end':'start'};background:${m.sender_role==='admin'?'var(--panel-soft)':'var(--info-bg)'};color:var(--ink);padding:12px 14px;border-radius:10px;overflow-wrap:anywhere"><small class="mute">${m.sender_role==='admin'?'Jake · Admin':'Customer'} · ${dt(m.created_at)}</small><p>${esc(m.body).replace(/\\n/g,'<br>')}</p></div>`).join(''):'<p class="mute">No messages in this conversation yet.</p>'}</div>
-  <form id="adminMessageForm" data-order-id="${esc(chosen.order_id)}" style="display:grid;gap:10px"><label>Reply to customer<textarea name="body" rows="4" required maxlength="2000" placeholder="Write your reply..."></textarea></label><button type="submit">Send reply</button></form>
+ const convo=chosen?`<div class="card admin-chat-card"><div class="admin-chat-head"><div><p class="admin-chat-kicker">ORDER CONVERSATION</p><h2>${esc(chosen.order_no)} · ${esc(chosen.customer_name||'Customer')}</h2><p class="mute">${esc(chosen.customer_email||'This order is not linked to a customer account.')}</p></div><span class="admin-chat-badge">Private thread</span></div>
+  <div class="admin-chat-note">Use this conversation for questions, additional requests, and artwork progress updates. Messages stay attached to this order.</div>
+  <div class="admin-thread" aria-live="polite" aria-relevant="additions text">${messages.length?messages.map(m=>`<article class="admin-chat-message ${m.sender_role==='admin'?'mine':'theirs'}"><div class="admin-chat-meta"><strong>${m.sender_role==='admin'?'You · Admin':'Customer'}</strong><time datetime="${esc(m.created_at)}">${dt(m.created_at)}</time></div><div class="admin-chat-body">${esc(m.body).replace(/\n/g,'<br>')}</div></article>`).join(''):'<div class="admin-chat-empty"><strong>No messages yet</strong><p>Send a welcome note or share the first artwork progress update.</p></div>'}</div>
+  <div class="admin-chat-presets"><strong>Progress update templates</strong><button type="button" data-chat-template="Progress update: I’ve started working on your artwork. I’ll share another update as it develops.">Started artwork</button><button type="button" data-chat-template="Progress update: The initial sketch is ready. Please message me if you’d like to discuss any details before I continue.">Sketch ready</button><button type="button" data-chat-template="Progress update: Your artwork is currently in progress. Thank you for your patience; I’ll keep you updated here.">In progress</button><button type="button" data-chat-template="Progress update: Your artwork is complete. I’ll message you here with the next payment or delivery steps.">Artwork complete</button><button type="button" data-chat-template="Progress update: Your artwork is ready for delivery or dispatch. I’ll confirm the delivery details here.">Ready for delivery</button></div>
+  <form id="adminMessageForm" data-order-id="${esc(chosen.order_id)}" class="admin-chat-compose"><label for="adminChatBody">Message to customer<textarea id="adminChatBody" name="body" rows="4" required maxlength="2000" placeholder="Reply to their question, confirm an addition, or share artwork progress…"></textarea></label><div class="admin-chat-compose-foot"><small>Sending here adds the message to this order’s customer chat.</small><button type="submit">Send message ↗</button></div></form>
  </div>`:'<div class="empty">Select a conversation to read messages and reply. New customer messages will appear here.</div>';
  $('#view').innerHTML=`<div class="message-layout" style="display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.4fr);gap:16px;align-items:start">
   <div><h2>Customer conversations (${threads.length})</h2><p class="mute" style="margin-bottom:12px">Unread counts update when the inbox is refreshed or a conversation is opened.</p>${threads.length?threads.map(threadCard).join(''):'<div class="empty">No customer messages yet.</div>'}</div>
@@ -237,6 +272,7 @@ $('#view').onclick=async e=>{const b=e.target.closest('button');if(!b)return;con
   b.disabled=true;const res=id?await sb.from(t).update(rec).eq('id',id):await sb.from(t).insert(rec);b.disabled=false;
   if(ok(res,k=='opt'?'Price saved.':'Saved.')&&(!id||k=='art'))render()}};
 
+$('#view').addEventListener('click',e=>{const chip=e.target.closest('[data-chat-template]');if(!chip)return;const form=chip.closest('.admin-chat-card')?.querySelector('#adminMessageForm');const input=form?.querySelector('textarea[name="body"]');if(!input)return;input.value=chip.dataset.chatTemplate||'';input.focus();input.setSelectionRange(input.value.length,input.value.length)});
 $('#view').addEventListener('submit',async e=>{
  if(e.target.id!=='adminMessageForm')return;
  e.preventDefault();
