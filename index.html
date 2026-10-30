@@ -964,7 +964,65 @@ input,select,textarea,button,.btn{max-width:100%}
 .notification-item small,.notification-empty{font-size:.75rem;color:#74695d}
 .notification-empty{padding:22px 10px;text-align:center}
 @media(max-width:700px){.nav-notifications{width:100%}#notificationBell{width:100%;justify-content:center}#notificationPanel{position:fixed;top:78px;right:12px;left:12px;width:auto;max-height:calc(100dvh - 100px)}}
-</style></head>
+</style>
+<style id="responsive-navigation-final-fix">
+/* Shop Originals is its own view: never bleed into pricing, account, orders, or other pages. */
+body:not([data-view="public"]) > #shop{display:none!important}
+body[data-view="shop"] > #shop{display:block!important}
+body[data-view="shop"] > .hero,
+body[data-view="shop"] > #gallery,
+body[data-view="shop"] > #pricing,
+body[data-view="shop"] > #how,
+body[data-view="shop"] > #reviews{display:none!important}
+/* Commission CTA belongs to browsing/inquiry, not the account or order-management screens. */
+body[data-view="account"] .site-header .nav-commission,
+body[data-view="track"] .site-header .nav-commission,
+body[data-view="order"] .site-header .nav-commission{display:none!important}
+/* Fluid desktop and laptop sizing. */
+html{scroll-padding-top:84px}
+body{font-size:clamp(15px,calc(14px + .22vw),17px)}
+section{width:100%;min-width:0}
+.site-header{width:100%;min-width:0}
+.site-header .nav-layout{min-width:0}
+.site-header .nav-primary,.site-header .nav-actions{min-width:0}
+#gallery .grid,#shopGrid,.price,.steps,.rev{width:100%;min-width:0}
+#shopGrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr))}
+#supportSections{width:100%;max-width:1160px}
+#supportSections>section{width:100%;min-width:0}
+#supportSections .account-card,#supportSections #orderForm,#supportSections #trackOut{width:100%;max-width:100%}
+#dlg{width:min(860px,calc(100vw - 32px));max-width:860px}
+#dlgArt{min-width:0}
+#dlgArt img{max-width:100%;height:auto}
+@media(min-width:1181px){
+ .site-header{padding-left:max(4vw,calc((100vw - 1440px)/2));padding-right:max(4vw,calc((100vw - 1440px)/2))}
+ section{padding-left:max(5vw,calc((100vw - 1280px)/2));padding-right:max(5vw,calc((100vw - 1280px)/2))}
+ .hero{min-height:min(78vh,820px)}
+}
+@media(max-width:860px){
+ body[data-view="shop"] #shop{padding-top:44px;padding-bottom:56px}
+ body[data-view="shop"] #shopGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:600px){
+ .site-header{padding-left:14px!important;padding-right:14px!important}
+ #supportSections{padding:24px 14px 52px}
+ #supportSections>section{padding:0!important}
+ #supportSections #orderForm .two{grid-template-columns:minmax(0,1fr)}
+ #shopGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ #shopGrid .art{padding:8px}
+ #shopGrid .art-card-copy{padding:9px 2px 3px}
+ #shopGrid .art-card-copy strong{font-size:.94rem}
+ #shopGrid .art-card-copy small{font-size:.82rem}
+ #shopGrid .art-card-price{font-size:.95rem}
+ #dlg{width:calc(100vw - 20px);max-height:calc(100dvh - 24px)}
+ #dlgArt img{max-height:55dvh;object-fit:contain}
+ .cap{padding:14px 16px 20px}
+}
+@media(max-width:380px){
+ #shopGrid{grid-template-columns:1fr}
+ .site-header .logo{font-size:1.05rem}
+}
+</style>
+</head>
 <body>
 <nav aria-label="Main website navigation" class="site-header">
 <a class="logo" href="index.html"><img alt="" onerror="this.remove()" src="logo.png" style="height:30px;vertical-align:middle;margin-right:8px"/>Art Commission <i>PH</i></a>
@@ -1002,7 +1060,7 @@ input,select,textarea,button,.btn{max-width:100%}
 </section>
 <section id="gallery">
 <p class="section-kicker">01 / Selected work</p>
-<div class="studio-section-heading"><div><h2>Find the piece that speaks to you.</h2><p class="lead">Own an original artwork today—or commission a one-of-a-kind piece inspired by your story.</p></div><a class="studio-quicklink" href="#order">Create something personal <span aria-hidden="true">↗</span></a></div>
+<div class="studio-section-heading"><div><h2>Find the piece that speaks to you.</h2><p class="lead">Own an original artwork today—or commission a one-of-a-kind piece inspired by your story.</p></div><a class="studio-quicklink" href="#order">Create something personal <span aria-hidden="true">↗</span></a><a class="studio-quicklink" href="#shop">Shop original artworks <span aria-hidden="true">↗</span></a></div>
 <div class="tabs" id="tabs"></div>
 <div class="grid" id="grid"></div>
 </section>
@@ -1719,7 +1777,7 @@ sb.auth.onAuthStateChange((event,_session)=>{
 // Customer single-file router: account, order and track are NOT homepage scroll sections.
 let pendingCustomerDestination=null;
 function customerView(){
- const target=['gallery','pricing','how','reviews','account','order','track'].includes(location.hash.slice(1))?location.hash.slice(1):'public';
+ const target=['gallery','shop','pricing','how','reviews','account','order','track'].includes(location.hash.slice(1))?location.hash.slice(1):'public';
  if((target==='order'||target==='track') && (!currentUser || !isVerifiedUser(currentUser))){
    pendingCustomerDestination=target;
    if(location.hash!=='#account'){location.hash='#account';return;}
