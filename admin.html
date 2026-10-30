@@ -88,7 +88,73 @@ aside{background:linear-gradient(180deg,#241f1b 0%,#352a24 100%);box-shadow:5px 
 .admin-notif-item strong{font-size:.9rem}.admin-notif-item span{font-size:.84rem;font-weight:400;line-height:1.45;overflow-wrap:anywhere}.admin-notif-item small,.admin-notif-empty{font-size:.75rem;color:var(--muted)}
 .admin-notif-empty{text-align:center;padding:20px 8px}
 @media(max-width:650px){#adminNotificationArea{margin-left:auto}#adminNotificationBell{padding:9px 10px;font-size:.84rem}#adminNotificationPanel{position:fixed;top:76px;left:12px;right:12px;width:auto;max-height:calc(100dvh - 100px)}.top{flex-wrap:wrap}}
-</style></head>
+</style>
+<style id="admin-responsive-final-fix">
+/* Ensure the dashboard uses the available desktop width instead of shrinking to content. */
+.shell{width:100%;min-height:100vh;grid-template-columns:266px minmax(0,1fr)}
+.main{display:block;width:100%;min-width:0;max-width:1750px;margin:0 auto;padding:clamp(22px,2.7vw,44px) clamp(18px,2.8vw,48px) 70px}
+.top,#view{width:100%;min-width:0}
+#view>*{min-width:0}
+.tiles{width:100%;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
+.attention-grid{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
+.card,.attention-panel,.filters,.split,.message-layout{min-width:0}
+.message-layout{width:100%}
+.message-layout>div{min-width:0}
+.message-layout .card{overflow-wrap:anywhere}
+.gal{grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
+.wrap{max-width:100%}
+@media(min-width:901px){
+ .shell{grid-template-columns:266px minmax(0,1fr)}
+ aside{width:266px}
+ .main{width:100%;max-width:1750px}
+ .top{gap:18px}
+ #view{max-width:none}
+ .attention-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:1100px) and (min-width:901px){
+ .shell{grid-template-columns:230px minmax(0,1fr)}
+ aside{width:230px}
+ .main{padding:24px 22px 56px}
+ .attention-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+ .tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
+}
+@media(max-width:900px){
+ .shell{display:block;width:100%}
+ .main{width:100%;max-width:none;margin:0;padding:22px 18px 52px}
+ .top{align-items:center;flex-wrap:wrap}
+ .top h1{min-width:0;overflow-wrap:anywhere}
+ .attention-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .message-layout{grid-template-columns:minmax(0,1fr)!important}
+}
+@media(max-width:600px){
+ .main{padding:18px 13px 42px}
+ .top{gap:10px;padding-bottom:15px;margin-bottom:18px}
+ .top h1{font-size:clamp(1.8rem,8vw,2.25rem)}
+ .attention-grid,.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+ .attention-panel{padding:15px}
+ .attention-link{min-width:0;padding:12px;gap:8px;font-size:.88rem}
+ .attention-link strong{font-size:1.45rem}
+ .tile{min-width:0;padding:14px;min-height:104px}
+ .tile b{font-size:2rem}
+ .tile span{font-size:.82rem;line-height:1.35}
+ .filters{grid-template-columns:minmax(0,1fr);padding:12px}
+ .filters label:first-child{grid-column:auto}
+ .split,.split.has{grid-template-columns:minmax(0,1fr)}
+ .card{padding:15px}
+ .row{grid-template-columns:minmax(0,1fr)}
+ .row>button{width:100%}
+ .acts{justify-content:stretch}
+ .acts button{flex:1 1 100%}
+ .wrap{overflow-x:auto}
+ .wrap table{min-width:620px}
+ #adminNotificationPanel{left:10px;right:10px;width:auto}
+}
+@media(max-width:360px){
+ .attention-grid,.tiles{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+</head>
 <body>
 <p id="load" role="status">Loading...</p>
 <div id="login" class="box" hidden><h1>Admin login</h1>
