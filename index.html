@@ -1603,7 +1603,7 @@ function fPrice(){const o=opts.find(x=>x.id==$('#fSvc').value);$('#fPrice').text
 $('#fCat').onchange=fCat;$('#fSvc').onchange=fPrice;
 $('#fDimSelect').onchange=()=>{const custom=$('#fDimSelect').value==='Other / custom dimensions';$('#fDimCustom').hidden=!custom;$('#fDimCustom').required=custom;if(!custom)$('#fDimCustom').value=''};
 function drawReviews(){
-  $('#revList').innerHTML=revs.map(r=>`<blockquote><span class="review-stars" aria-label="${Number(r.stars)||0} out of 5 stars">${'★'.repeat(Math.max(0,Math.min(5,Number(r.stars)||0)))}</span><br>${esc(r.body)}${r.image_path?`<img class="review-photo" src="${esc(sb.storage.from('review-photos').getPublicUrl(r.image_path).data.publicUrl)}" alt="Finished artwork shared by ${esc(r.name)}" loading="lazy">`:''}<cite>${esc(r.name)}</cite></blockquote>`).join('')||'<p class="lead">No reviews yet. Be the first.</p>'}
+  $('#revList').innerHTML=revs.map(r=>`<blockquote><span class="review-stars" aria-label="${Number(r.stars)||0} out of 5 stars">${'★'.repeat(Math.max(0,Math.min(5,Number(r.stars)||0)))}</span><br>${esc(r.body)}${r.image_path?`<img class="review-photo" src="${esc(sb.storage.from('review-artworks').getPublicUrl(r.image_path).data.publicUrl)}" alt="Finished artwork shared by ${esc(r.name)}" loading="lazy">`:''}<cite>${esc(r.name)}</cite></blockquote>`).join('')||'<p class="lead">No reviews yet. Be the first.</p>'}
 
 $('#orderForm').onsubmit=async e=>{
  e.preventDefault();
@@ -1722,7 +1722,7 @@ $('#revForm').onsubmit=async e=>{
       if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use a JPG, PNG, or WebP photo.');
       const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
       photoPath=`${currentUser.id}/${crypto.randomUUID()}.${ext}`;
-      const upload=await sb.storage.from('review-photos').upload(photoPath,file,{contentType:file.type,upsert:false});
+      const upload=await sb.storage.from('review-artworks').upload(photoPath,file,{contentType:file.type,upsert:false});
       if(upload.error)throw upload.error;
     }
     const {error}=await sb.from('reviews').insert({
@@ -1739,7 +1739,7 @@ $('#revForm').onsubmit=async e=>{
     const {data}=await sb.from('reviews').select('*').eq('approved',true).order('created_at',{ascending:false});
     revs=data||[];drawReviews();
   }catch(err){
-    if(photoPath)await sb.storage.from('review-photos').remove([photoPath]);
+    if(photoPath)await sb.storage.from('review-artworks').remove([photoPath]);
     show($('#revMsg'),'Could not send the review: '+(err.message||'Please try again.'),true);
   }finally{btn.disabled=false;btn.textContent='Send review'}
 };
