@@ -455,6 +455,10 @@ section{scroll-margin-top:76px}
 #trackOut .customer-message{line-height:1.55}
 #trackOut .customer-message.mine{background:#e8f2e9}
 #reviews .rev blockquote{background:#fffdf9}
+.review-photo{display:block;width:100%;max-height:360px;object-fit:contain;margin:14px 0 4px;border-radius:10px;background:#f1e8dd}
+#revForm .review-upload-note{font-size:.88rem;color:#e0d2c2;line-height:1.5}
+#revForm input[type=file]{background:#211d19;color:#fff8ed}
+#revForm .review-auth-note{font-size:.9rem;color:#e0d2c2;line-height:1.5}
 .msg.show{color:#264d32;background:#eaf5ec;border:1px solid #a8c7b1;border-left:5px solid #3b8356;box-shadow:none}
 .msg.show[style*='bad'],.msg.show[style*='red']{color:#7b2d27;background:#fff0ed;border-color:#e1a39c}
 @media(max-width:900px){.service-teasers{grid-template-columns:1fr 1fr}.hero{padding-top:60px}.hero h1{max-width:15ch}}
@@ -1050,11 +1054,14 @@ input,select,textarea,button,.btn{max-width:100%}
 <div class="rev" id="revList"></div>
 <form id="revForm">
 <h3>Leave a review</h3>
-<div class="two"><label>Name<input name="who" required=""/></label>
-<label>Rating<select name="stars"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option></select></label></div>
-<label>Review<textarea name="text" required="" rows="3"></textarea></label>
+<p class="review-auth-note">Reviews are available to signed-in clients with a completed or delivered order. You may attach a photo of your finished artwork.</p>
+<div class="two"><label>Name<input name="who" required="" maxlength="100" autocomplete="name"/></label>
+<label>Rating<select name="stars"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label></div>
+<label>Review<textarea name="text" required="" rows="3" maxlength="2000" placeholder="Tell us about your completed artwork…"></textarea></label>
+<label>Photo of your finished artwork (optional)<input type="file" name="review_image" accept="image/jpeg,image/png,image/webp"/></label>
+<p class="review-upload-note">JPG, PNG, or WebP · Maximum 5 MB.</p>
 <button class="btn" type="submit">Send review</button>
-<div class="msg" id="revMsg" role="status"></div>
+<div class="msg" id="revMsg" role="status" aria-live="polite"></div>
 </form>
 </section>
 <div id="supportSections"><div class="spa-toolbar"><a href="#top" class="spa-back">← Back to the website</a><span>CUSTOMER ACCOUNT</span></div><section class="cream" id="account">
@@ -1596,7 +1603,7 @@ function fPrice(){const o=opts.find(x=>x.id==$('#fSvc').value);$('#fPrice').text
 $('#fCat').onchange=fCat;$('#fSvc').onchange=fPrice;
 $('#fDimSelect').onchange=()=>{const custom=$('#fDimSelect').value==='Other / custom dimensions';$('#fDimCustom').hidden=!custom;$('#fDimCustom').required=custom;if(!custom)$('#fDimCustom').value=''};
 function drawReviews(){
- $('#revList').innerHTML=revs.map(r=>`<blockquote>${'★'.repeat(r.stars)}<br>${esc(r.body)}<cite>${esc(r.name)}</cite></blockquote>`).join('')||'<p class="lead">No reviews yet. Be the first.</p>'}
+  $('#revList').innerHTML=revs.map(r=>`<blockquote><span class="review-stars" aria-label="${Number(r.stars)||0} out of 5 stars">${'★'.repeat(Math.max(0,Math.min(5,Number(r.stars)||0)))}</span><br>${esc(r.body)}${r.image_path?`<img class="review-photo" src="${esc(sb.storage.from('review-photos').getPublicUrl(r.image_path).data.publicUrl)}" alt="Finished artwork shared by ${esc(r.name)}" loading="lazy">`:''}<cite>${esc(r.name)}</cite></blockquote>`).join('')||'<p class="lead">No reviews yet. Be the first.</p>'}
 
 $('#orderForm').onsubmit=async e=>{
  e.preventDefault();
@@ -1657,7 +1664,7 @@ function renderTrack(){const o=T,s=o.summary,P=o.payments,act=x=>P.some(p=>p.pur
   <p class="chat-intro">Ask Jake about additions, reference details, changes, payment, or delivery. Artwork progress updates will also appear here.</p>
   <div id="customerThread" class="customer-thread" aria-live="polite" aria-relevant="additions text"><p class="hint">Loading your conversation…</p></div>
   <div class="chat-prompts" aria-label="Suggested messages"><span>Quick message:</span><button type="button" data-chat-template="Hi Jake, I’d like to ask if I can add an extra detail to this order.">Ask about an addition</button><button type="button" data-chat-template="Hi Jake, could you please share an update on the artwork progress for this order?">Request progress update</button><button type="button" data-chat-template="Hi Jake, I have a question about the final details of this order.">Ask a question</button></div>
-  <form class="customer-message-form"><label for="customerMessageBody">Your message to Jake<textarea id="customerMessageBody" name="body" required minlength="1" maxlength="2000" placeholder="Write your question or additional request…"></textarea></label><div class="chat-compose-footer"><label class="chat-attach-label">Attach artwork/photo <input type="file" name="message_image" accept="image/jpeg,image/png,image/webp"></label><small>Images up to 5 MB. Keep messages related to this order.</small><button class="btn" type="submit"><span aria-hidden="true">↗</span> Send message</button></div></form>
+  <form class="customer-message-form"><label for="customerMessageBody">Your message to Jake<textarea id="customerMessageBody" name="body" maxlength="2000" placeholder="Write your question or additional request…"></textarea></label><div class="chat-compose-footer"><label class="chat-attach-label">Attach artwork/photo <input type="file" name="message_image" accept="image/jpeg,image/png,image/webp"></label><small>Images up to 5 MB. Keep messages related to this order.</small><button class="btn" type="submit"><span aria-hidden="true">↗</span> Send message</button></div></form>
  </section>`;
  $('#trackOut').innerHTML=h;loadCustomerMessages(o.id);subscribeCustomerMessages(o.id)}
 $('#trackOut').addEventListener('click',e=>{const chip=e.target.closest('[data-chat-template]');if(!chip)return;const form=chip.closest('.customer-messages')?.querySelector('.customer-message-form');const input=form?.querySelector('textarea[name="body"]');if(!input)return;input.value=chip.dataset.chatTemplate||'';input.focus();input.setSelectionRange(input.value.length,input.value.length)});
@@ -1695,10 +1702,47 @@ $('#trackOut').onsubmit=async e=>{
  }catch(err){const m=err.message||'';show($('#trackMsg'),/violates|relation|function|syntax|permission/i.test(m)||m.length>220?'Something went wrong. Please try again.':m,true)}
  b.disabled=false;
 };
-$('#revForm').onsubmit=async e=>{e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
- const {error}=await sb.from('reviews').insert({name:f.who,stars:+f.stars,body:f.text});
- if(error)return show($('#revMsg'),'Could not send the review: '+error.message);
- e.target.reset();show($('#revMsg'),'Thank you! Your review will appear after Jake approves it.')};
+$('#revForm').onsubmit=async e=>{
+  e.preventDefault();
+  const form=e.target,btn=form.querySelector('button[type="submit"]'),fd=new FormData(form);
+  if(!currentUser||!isVerifiedUser(currentUser)){
+    show($('#revMsg'),'Please sign in with your verified customer account before submitting a review.',true);
+    location.hash='#account';return;
+  }
+  btn.disabled=true;btn.textContent='Sending…';
+  let photoPath=null;
+  try{
+    const {data:orders,error:ordersError}=await sb.rpc('customer_orders');
+    if(ordersError)throw ordersError;
+    const completed=(Array.isArray(orders)?orders:[]).filter(o=>['done','delivered','completed'].includes(String(o.status||'').toLowerCase()));
+    if(!completed.length)throw new Error('You can submit a review after your artwork order is marked Done or Delivered.');
+    const file=fd.get('review_image');
+    if(file&&file.size){
+      if(file.size>5*1024*1024)throw new Error('Please choose a photo smaller than 5 MB.');
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use a JPG, PNG, or WebP photo.');
+      const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+      photoPath=`${currentUser.id}/${crypto.randomUUID()}.${ext}`;
+      const upload=await sb.storage.from('review-photos').upload(photoPath,file,{contentType:file.type,upsert:false});
+      if(upload.error)throw upload.error;
+    }
+    const {error}=await sb.from('reviews').insert({
+      name:String(fd.get('who')||'').trim(),
+      stars:Number(fd.get('stars')),
+      body:String(fd.get('text')||'').trim(),
+      image_path:photoPath,
+      order_id:completed[0].id,
+      user_id:currentUser.id
+    });
+    if(error)throw error;
+    form.reset();
+    show($('#revMsg'),'Thank you. Your review has been submitted and will appear when it is approved.');
+    const {data}=await sb.from('reviews').select('*').eq('approved',true).order('created_at',{ascending:false});
+    revs=data||[];drawReviews();
+  }catch(err){
+    if(photoPath)await sb.storage.from('review-photos').remove([photoPath]);
+    show($('#revMsg'),'Could not send the review: '+(err.message||'Please try again.'),true);
+  }finally{btn.disabled=false;btn.textContent='Send review'}
+};
 
 
 const bg=$('.burger'),mn=$('#menu');bg.onclick=()=>{const o=mn.classList.toggle('open');bg.setAttribute('aria-expanded',o)};mn.onclick=e=>{if(e.target.closest('a')){mn.classList.remove('open');bg.setAttribute('aria-expanded','false')}};
