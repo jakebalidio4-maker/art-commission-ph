@@ -369,10 +369,10 @@ $('#view').addEventListener('submit',async e=>{
   let imagePath=null;
   if(file&&file.size){if(file.size>5*1024*1024)throw new Error('Please use an image smaller than 5 MB.');
    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use JPG, PNG, or WebP images.');
-   const orderLookup=await sb.from('orders').select('customer_id').eq('id',form.dataset.orderId).maybeSingle();
-   if(orderLookup.error)throw orderLookup.error;
-   if(!orderLookup.data?.customer_id)throw new Error('This order is not linked to a customer account, so a private progress photo cannot be shared yet.');
-   const path=`${orderLookup.data.customer_id}/${form.dataset.orderId}/${crypto.randomUUID()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;
+   const {data:adminAuth,error:authError}=await sb.auth.getUser();
+   if(authError)throw authError;
+   if(!adminAuth?.user?.id)throw new Error('Your admin session has expired. Please sign in again.');
+   const path=`${adminAuth.user.id}/${form.dataset.orderId}/${crypto.randomUUID()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;
    const up=await sb.storage.from('message-attachments').upload(path,file,{contentType:file.type,upsert:false});if(up.error)throw up.error;imagePath=path;
   }
   const {error}=await sb.rpc('admin_send_message_attachment',{p_order_id:form.dataset.orderId,p_body:body||null,p_image_path:imagePath});
