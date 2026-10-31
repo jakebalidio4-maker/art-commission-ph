@@ -1054,11 +1054,11 @@ input,select,textarea,button,.btn{max-width:100%}
 <div class="rev" id="revList"></div>
 <form id="revForm">
 <h3>Leave a review</h3>
-<p class="review-auth-note">Reviews are available to signed-in clients with a completed or delivered order. You may attach a photo of your finished artwork.</p>
+<p class="review-auth-note">Reviews are available to signed-in clients with a completed or delivered order. Submitted reviews publish automatically. You may attach a photo of your finished artwork.</p>
 <div class="two"><label>Name<input name="who" required="" maxlength="100" autocomplete="name"/></label>
 <label>Rating<select name="stars"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label></div>
 <label>Review<textarea name="text" required="" rows="3" maxlength="2000" placeholder="Tell us about your completed artwork…"></textarea></label>
-<label>Photo of your finished artwork (optional)<input type="file" name="review_image" accept="image/jpeg,image/png,image/webp"/></label>
+<label>Photo of your finished artwork (optional)<input type="file" name="review_image" accept="image/jpeg,image/png,image/webp"/><small class="review-upload-note">You may attach a JPG, PNG, or WebP photo · maximum 5 MB.</small></label>
 <p class="review-upload-note">JPG, PNG, or WebP · Maximum 5 MB.</p>
 <button class="btn" type="submit">Send review</button>
 <div class="msg" id="revMsg" role="status" aria-live="polite"></div>
@@ -1602,8 +1602,15 @@ function fCat(){const c=$('#fCat').value;$('#fSvc').innerHTML=opts.filter(o=>o.c
 function fPrice(){const o=opts.find(x=>x.id==$('#fSvc').value);$('#fPrice').textContent=!o?'':o.price!=null?`Fixed price: ₱${Number(o.price).toLocaleString()} (negotiable)`:'Price on quotation: Jake will send you a quote after reviewing your details.'}
 $('#fCat').onchange=fCat;$('#fSvc').onchange=fPrice;
 $('#fDimSelect').onchange=()=>{const custom=$('#fDimSelect').value==='Other / custom dimensions';$('#fDimCustom').hidden=!custom;$('#fDimCustom').required=custom;if(!custom)$('#fDimCustom').value=''};
-function drawReviews(){
-  $('#revList').innerHTML=revs.map(r=>`<blockquote><span class="review-stars" aria-label="${Number(r.stars)||0} out of 5 stars">${'★'.repeat(Math.max(0,Math.min(5,Number(r.stars)||0)))}</span><br>${esc(r.body)}${r.image_path?`<img class="review-photo" src="${esc(sb.storage.from('review-artworks').getPublicUrl(r.image_path).data.publicUrl)}" alt="Finished artwork shared by ${esc(r.name)}" loading="lazy">`:''}<cite>${esc(r.name)}</cite></blockquote>`).join('')||'<p class="lead">No reviews yet. Be the first.</p>'}
+async function drawReviews(){
+  const list=$('#revList');
+  list.innerHTML=revs.map((r,i)=>{const photoPath=r.image_path||r.artwork_photo_path||null;return `<blockquote><span class="review-stars" aria-label="${Number(r.stars)||0} out of 5 stars">${'★'.repeat(Math.max(0,Math.min(5,Number(r.stars)||0)))}</span><br>${esc(r.body)}${photoPath?`<div class="review-photo-wrap" data-review-photo="${esc(photoPath)}"><span class="review-upload-note">Loading artwork photo…</span></div>`:''}<cite>${esc(r.name)}</cite></blockquote>`}).join('')||'<p class="lead">No reviews yet. Be the first.</p>';
+  list.querySelectorAll('[data-review-photo]').forEach(async box=>{
+    const {data,error}=await sb.storage.from('review-artworks').createSignedUrl(box.dataset.reviewPhoto,900);
+    if(!error&&data?.signedUrl)box.innerHTML=`<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener"><img class="review-photo" src="${esc(data.signedUrl)}" alt="Finished artwork shared by customer" loading="lazy"></a>`;
+    else box.textContent='Artwork photo is temporarily unavailable.';
+  });
+}
 
 $('#orderForm').onsubmit=async e=>{
  e.preventDefault();
@@ -1679,8 +1686,12 @@ $('#trackOut').onsubmit=async e=>{
    let imagePath=null;
    if(file&&file.size){if(file.size>5*1024*1024)throw new Error('Please use an image smaller than 5 MB.');
     if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use JPG, PNG, or WebP images.');
-    const path=`${currentUser.id}/${T.id}/${crypto.randomUUID()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;
-    const up=await sb.storage.from('message-attachments').upload(path,file,{contentType:file.type,upsert:false});if(up.error)throw up.error;imagePath=path;
+    const compressed=await shrink(file);
+    if(!compressed)throw new Error('The image could not be processed. Please choose another JPG, PNG, or WebP file.');
+    const path=`${currentUser.id}/${T.id}/${crypto.randomUUID()}.webp`;
+    const up=await sb.storage.from('message-attachments').upload(path,compressed,{contentType:'image/webp',upsert:false});
+    if(up.error)throw new Error('Image upload failed: '+up.error.message+' (check the message-attachments bucket and its Storage policies).');
+    imagePath=path;
    }
    r=await sb.rpc('customer_send_message_attachment',{p_order_id:T.id,p_body:body||null,p_image_path:imagePath});
    if(r.error){if(imagePath)await sb.storage.from('message-attachments').remove([imagePath]);throw r.error}
@@ -1720,9 +1731,10 @@ $('#revForm').onsubmit=async e=>{
     if(file&&file.size){
       if(file.size>5*1024*1024)throw new Error('Please choose a photo smaller than 5 MB.');
       if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use a JPG, PNG, or WebP photo.');
-      const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
-      photoPath=`${currentUser.id}/${crypto.randomUUID()}.${ext}`;
-      const upload=await sb.storage.from('review-artworks').upload(photoPath,file,{contentType:file.type,upsert:false});
+      const compressed=await shrink(file);
+      if(!compressed)throw new Error('The photo could not be processed. Please choose another image.');
+      photoPath=`${currentUser.id}/${crypto.randomUUID()}.webp`;
+      const upload=await sb.storage.from('review-artworks').upload(photoPath,compressed,{contentType:'image/webp',upsert:false});
       if(upload.error)throw upload.error;
     }
     const {error}=await sb.from('reviews').insert({
@@ -1731,11 +1743,12 @@ $('#revForm').onsubmit=async e=>{
       body:String(fd.get('text')||'').trim(),
       image_path:photoPath,
       order_id:completed[0].id,
-      user_id:currentUser.id
+      user_id:currentUser.id,
+      approved:true
     });
     if(error)throw error;
     form.reset();
-    show($('#revMsg'),'Thank you. Your review has been submitted and will appear when it is approved.');
+    show($('#revMsg'),'Thank you! Your review is now published and visible in What Client Say.');
     const {data}=await sb.from('reviews').select('*').eq('approved',true).order('created_at',{ascending:false});
     revs=data||[];drawReviews();
   }catch(err){
