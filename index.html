@@ -770,6 +770,10 @@ button,.btn,input,select,textarea{font-family:var(--sans)}
 
 .chat-message-image img{display:block;max-width:min(100%,420px);max-height:420px;object-fit:contain;border-radius:12px;margin:8px 0}
 .customer-message-form input[type=file]{max-width:100%;font-size:.9rem}
+#gallery .gallery-shop-block{margin-top:clamp(36px,5vw,64px);padding-top:clamp(24px,4vw,42px);border-top:1px solid #e6dbce}
+#gallery .gallery-shop-heading{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px}
+#gallery .gallery-shop-heading h3{font-family:inherit;font-size:clamp(1.65rem,3vw,2.35rem);margin:4px 0 8px}
+@media(max-width:640px){#gallery .gallery-shop-heading{display:block}}
 </style>
 <style>
 /* V4 — discrete public / authentication / customer workspace screens */
@@ -975,7 +979,6 @@ input,select,textarea,button,.btn{max-width:100%}
 <div class="nav-layout" id="menu">
 <div aria-label="Explore the website" class="nav-primary">
 <a href="index.html#gallery">Gallery</a>
-<a href="index.html#shop">Shop originals</a>
 <a href="index.html#pricing">Pricing</a>
 <a href="index.html#how">How it works</a>
 <a href="index.html#reviews">Reviews</a>
@@ -1008,11 +1011,12 @@ input,select,textarea,button,.btn{max-width:100%}
 <div class="studio-section-heading"><div><h2>Find the piece that speaks to you.</h2><p class="lead">Own an original artwork today—or commission a one-of-a-kind piece inspired by your story.</p></div><a class="studio-quicklink" href="#order">Create something personal <span aria-hidden="true">↗</span></a></div>
 <div class="tabs" id="tabs"></div>
 <div class="grid" id="grid"></div>
-</section>
-<section class="cream" id="shop">
-<p class="section-kicker">02 / Original artworks for sale</p>
-<div class="studio-section-heading"><div><h2>Shop original artworks.</h2><p class="lead">Browse finished pieces with their size and price. Only artworks currently available for purchase are listed here.</p></div></div>
+<div class="gallery-shop-block" id="shop">
+<div class="gallery-shop-heading">
+<div><p class="section-kicker">Original artworks for sale</p><h3>Shop originals</h3><p class="lead">Browse finished pieces with their size and price. Only artworks currently available for purchase are listed here.</p></div>
+</div>
 <div class="grid" id="shopGrid" aria-live="polite"><p class="lead">Loading available artworks…</p></div>
+</div>
 </section>
 <section class="cream" id="pricing">
 <p class="section-kicker">03 / Services &amp; pricing</p>
