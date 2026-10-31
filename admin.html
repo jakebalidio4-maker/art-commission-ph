@@ -88,73 +88,10 @@ aside{background:linear-gradient(180deg,#241f1b 0%,#352a24 100%);box-shadow:5px 
 .admin-notif-item strong{font-size:.9rem}.admin-notif-item span{font-size:.84rem;font-weight:400;line-height:1.45;overflow-wrap:anywhere}.admin-notif-item small,.admin-notif-empty{font-size:.75rem;color:var(--muted)}
 .admin-notif-empty{text-align:center;padding:20px 8px}
 @media(max-width:650px){#adminNotificationArea{margin-left:auto}#adminNotificationBell{padding:9px 10px;font-size:.84rem}#adminNotificationPanel{position:fixed;top:76px;left:12px;right:12px;width:auto;max-height:calc(100dvh - 100px)}.top{flex-wrap:wrap}}
-</style>
-<style id="admin-responsive-final-fix">
-/* Ensure the dashboard uses the available desktop width instead of shrinking to content. */
-.shell{width:100%;min-height:100vh;grid-template-columns:266px minmax(0,1fr)}
-.main{display:block;width:100%;min-width:0;max-width:1750px;margin:0 auto;padding:clamp(22px,2.7vw,44px) clamp(18px,2.8vw,48px) 70px}
-.top,#view{width:100%;min-width:0}
-#view>*{min-width:0}
-.tiles{width:100%;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr))}
-.attention-grid{width:100%;grid-template-columns:repeat(3,minmax(0,1fr))}
-.card,.attention-panel,.filters,.split,.message-layout{min-width:0}
-.message-layout{width:100%}
-.message-layout>div{min-width:0}
-.message-layout .card{overflow-wrap:anywhere}
-.gal{grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr))}
-.wrap{max-width:100%}
-@media(min-width:901px){
- .shell{grid-template-columns:266px minmax(0,1fr)}
- aside{width:266px}
- .main{width:100%;max-width:1750px}
- .top{gap:18px}
- #view{max-width:none}
- .attention-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-}
-@media(max-width:1100px) and (min-width:901px){
- .shell{grid-template-columns:230px minmax(0,1fr)}
- aside{width:230px}
- .main{padding:24px 22px 56px}
- .attention-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
- .tiles{grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr))}
-}
-@media(max-width:900px){
- .shell{display:block;width:100%}
- .main{width:100%;max-width:none;margin:0;padding:22px 18px 52px}
- .top{align-items:center;flex-wrap:wrap}
- .top h1{min-width:0;overflow-wrap:anywhere}
- .attention-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
- .message-layout{grid-template-columns:minmax(0,1fr)!important}
-}
-@media(max-width:600px){
- .main{padding:18px 13px 42px}
- .top{gap:10px;padding-bottom:15px;margin-bottom:18px}
- .top h1{font-size:clamp(1.8rem,8vw,2.25rem)}
- .attention-grid,.tiles{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
- .attention-panel{padding:15px}
- .attention-link{min-width:0;padding:12px;gap:8px;font-size:.88rem}
- .attention-link strong{font-size:1.45rem}
- .tile{min-width:0;padding:14px;min-height:104px}
- .tile b{font-size:2rem}
- .tile span{font-size:.82rem;line-height:1.35}
- .filters{grid-template-columns:minmax(0,1fr);padding:12px}
- .filters label:first-child{grid-column:auto}
- .split,.split.has{grid-template-columns:minmax(0,1fr)}
- .card{padding:15px}
- .row{grid-template-columns:minmax(0,1fr)}
- .row>button{width:100%}
- .acts{justify-content:stretch}
- .acts button{flex:1 1 100%}
- .wrap{overflow-x:auto}
- .wrap table{min-width:620px}
- #adminNotificationPanel{left:10px;right:10px;width:auto}
-}
-@media(max-width:360px){
- .attention-grid,.tiles{grid-template-columns:minmax(0,1fr)}
-}
-</style>
-</head>
+
+.admin-message-image img{display:block;max-width:min(100%,460px);max-height:460px;object-fit:contain;border-radius:12px;margin:8px 0}
+#adminMessageForm input[type=file]{max-width:100%}
+</style></head>
 <body>
 <p id="load" role="status">Loading...</p>
 <div id="login" class="box" hidden><h1>Admin login</h1>
@@ -316,12 +253,13 @@ async messages(){
    <small class="mute">${t.last_message?.created_at?dt(t.last_message.created_at):''}</small>
   </button>`;
  const convo=chosen?`<div class="card"><h2>${esc(chosen.order_no)} · ${esc(chosen.customer_name||'Customer')}</h2><p class="mute">${esc(chosen.customer_email||'This order is not linked to a customer account.')}</p>
-  <div class="admin-thread" style="display:grid;gap:10px;margin:16px 0;max-height:480px;overflow:auto">${messages.length?messages.map(m=>`<div style="max-width:90%;justify-self:${m.sender_role==='admin'?'end':'start'};background:${m.sender_role==='admin'?'var(--panel-soft)':'var(--info-bg)'};color:var(--ink);padding:12px 14px;border-radius:10px;overflow-wrap:anywhere"><small class="mute">${m.sender_role==='admin'?'Jake · Admin':'Customer'} · ${dt(m.created_at)}</small><p>${esc(m.body).replace(/\\n/g,'<br>')}</p></div>`).join(''):'<p class="mute">No messages in this conversation yet.</p>'}</div>
-  <form id="adminMessageForm" data-order-id="${esc(chosen.order_id)}" style="display:grid;gap:10px"><label>Reply to customer<textarea name="body" rows="4" required maxlength="2000" placeholder="Write your reply..."></textarea></label><button type="submit">Send reply</button></form>
+  <div class="admin-thread" style="display:grid;gap:10px;margin:16px 0;max-height:480px;overflow:auto">${messages.length?messages.map(m=>`<div style="max-width:90%;justify-self:${m.sender_role==='admin'?'end':'start'};background:${m.sender_role==='admin'?'var(--panel-soft)':'var(--info-bg)'};color:var(--ink);padding:12px 14px;border-radius:10px;overflow-wrap:anywhere"><small class="mute">${m.sender_role==='admin'?'Jake · Admin':'Customer'} · ${dt(m.created_at)}</small>${m.image_path?`<div class="admin-message-image" data-message-image="${esc(m.image_path)}"><span class="mute">Loading image…</span></div>`:''}${m.body?`<p>${esc(m.body).replace(/\\n/g,'<br>')}</p>`:''}</div>`).join(''):'<p class="mute">No messages in this conversation yet.</p>'}</div>
+  <form id="adminMessageForm" data-order-id="${esc(chosen.order_id)}" style="display:grid;gap:10px"><label>Reply / progress caption<textarea name="body" rows="3" maxlength="2000" placeholder="Share an update about the artwork progress..."></textarea></label><label>Attach progress photo <input type="file" name="message_image" accept="image/jpeg,image/png,image/webp"></label><small class="mute">JPG, PNG, or WebP · maximum 5 MB</small><button type="submit">Send update</button></form>
  </div>`:'<div class="empty">Select a conversation to read messages and reply. New customer messages will appear here.</div>';
  $('#view').innerHTML=`<div class="message-layout" style="display:grid;grid-template-columns:minmax(260px,.8fr) minmax(0,1.4fr);gap:16px;align-items:start">
   <div><h2>Customer conversations (${threads.length})</h2><p class="mute" style="margin-bottom:12px">Unread counts update when the inbox is refreshed or a conversation is opened.</p>${threads.length?threads.map(threadCard).join(''):'<div class="empty">No customer messages yet.</div>'}</div>
   <div>${convo}</div></div>`;
+ $('#view').querySelectorAll('[data-message-image]').forEach(async box=>{const {data,error}=await sb.storage.from('message-attachments').createSignedUrl(box.dataset.messageImage,900);if(!error&&data?.signedUrl)box.innerHTML=`<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener"><img src="${esc(data.signedUrl)}" alt="Artwork progress attachment" loading="lazy"></a>`;else box.textContent='Image unavailable';});
 },
 
 async history(){const {data,error}=await sb.from('order_events').select('action,detail,actor,at,orders(order_no)').order('at',{ascending:false}).limit(300);if(error)throw error;
@@ -424,11 +362,23 @@ $('#view').onclick=async e=>{const b=e.target.closest('button');if(!b)return;con
 $('#view').addEventListener('submit',async e=>{
  if(e.target.id!=='adminMessageForm')return;
  e.preventDefault();
- const form=e.target,body=new FormData(form).get('body');
+ const form=e.target,fd=new FormData(form),body=String(fd.get('body')||'').trim(),file=fd.get('message_image');
  const btn=form.querySelector('button[type="submit"]');btn.disabled=true;btn.textContent='Sending...';
- const {error}=await sb.rpc('admin_send_message',{p_order_id:form.dataset.orderId,p_body:String(body||'').trim()});
- if(error){say('Could not send reply: '+error.message,1);btn.disabled=false;btn.textContent='Send reply';return}
- messageOrderId=form.dataset.orderId;await render();say('Reply sent to customer.');
+ try{
+  if(!body&&(!file||!file.size))throw new Error('Write a caption or attach a progress photo.');
+  let imagePath=null;
+  if(file&&file.size){if(file.size>5*1024*1024)throw new Error('Please use an image smaller than 5 MB.');
+   if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use JPG, PNG, or WebP images.');
+   const orderLookup=await sb.from('orders').select('customer_id').eq('id',form.dataset.orderId).maybeSingle();
+   if(orderLookup.error)throw orderLookup.error;
+   if(!orderLookup.data?.customer_id)throw new Error('This order is not linked to a customer account, so a private progress photo cannot be shared yet.');
+   const path=`${orderLookup.data.customer_id}/${form.dataset.orderId}/${crypto.randomUUID()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;
+   const up=await sb.storage.from('message-attachments').upload(path,file,{contentType:file.type,upsert:false});if(up.error)throw up.error;imagePath=path;
+  }
+  const {error}=await sb.rpc('admin_send_message_attachment',{p_order_id:form.dataset.orderId,p_body:body||null,p_image_path:imagePath});
+  if(error){if(imagePath)await sb.storage.from('message-attachments').remove([imagePath]);throw error}
+  messageOrderId=form.dataset.orderId;await render();say('Message / artwork progress sent to customer.');
+ }catch(err){say('Could not send update: '+err.message,1);btn.disabled=false;btn.textContent='Send update';}
 });
 
 start();
