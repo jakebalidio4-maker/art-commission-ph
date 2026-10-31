@@ -91,6 +91,8 @@ aside{background:linear-gradient(180deg,#241f1b 0%,#352a24 100%);box-shadow:5px 
 
 .admin-message-image img{display:block;max-width:min(100%,460px);max-height:460px;object-fit:contain;border-radius:12px;margin:8px 0}
 #adminMessageForm input[type=file]{max-width:100%}
+.review-admin-card code{font-size:.78rem;overflow-wrap:anywhere;white-space:normal}.review-admin-photo{margin:12px 0}.review-admin-card .sec p{margin:5px 0;overflow-wrap:anywhere}
+.review-admin-card code{font-size:.78rem;overflow-wrap:anywhere;white-space:normal}.review-admin-photo{margin:12px 0}.review-admin-card .sec p{margin:5px 0;overflow-wrap:anywhere}
 </style></head>
 <body>
 <p id="load" role="status">Loading...</p>
@@ -249,7 +251,7 @@ async messages(){
    <div class="meta"><b>${esc(t.order_no)}</b> ${t.unread_count?B(t.unread_count+' unread','warn'):''}</div>
    <p style="margin:6px 0"><b>${esc(t.customer_name||'Customer')}</b></p>
    <p class="mute" style="font-size:.85rem">${esc(t.customer_email||'Legacy order not linked to an account')}</p>
-   <p style="margin-top:6px">${esc(t.last_message?.body||'No messages yet').slice(0,140)}</p>
+   <p style="margin-top:6px">${esc(t.last_message?.body||(t.last_message?.image_path?'[Artwork photo attachment]':'No messages yet')).slice(0,140)}</p>
    <small class="mute">${t.last_message?.created_at?dt(t.last_message.created_at):''}</small>
   </button>`;
  const convo=chosen?`<div class="card"><h2>${esc(chosen.order_no)} · ${esc(chosen.customer_name||'Customer')}</h2><p class="mute">${esc(chosen.customer_email||'This order is not linked to a customer account.')}</p>
@@ -276,8 +278,44 @@ async gallery(){const {data,error}=await sb.from('artworks').select('*').order('
  <h2 style="margin-top:20px">Your artworks (${(data||[]).length})</h2>${(data||[]).length?`<div class="gal">${data.map(row).join('')}</div>`:'<div class="empty">No artworks yet. Upload your first one above.</div>'}`;
  $('#aF').onchange=e=>{const f=e.target.files[0];$('#aP').hidden=!f;if(f)$('#aP').src=URL.createObjectURL(f)}},
 
-async reviews(){const r=await sb.from('reviews').select('*').order('created_at',{ascending:false});if(r.error)throw r.error;L=r.data||[];
- $('#view').innerHTML=L.length?L.map((x,i)=>`<div class="card"><div class="meta"><b>${esc(x.name)}</b> <span aria-label="${x.stars} stars">${'★'.repeat(x.stars)}</span> ${B(x.approved?'Published':'Hidden')} <span class="mute">${dt(x.created_at)}</span></div><p style="margin:8px 0">${esc(x.body)}</p><button class="${x.approved?'g':''}" data-v="${i}">${x.approved?'Hide from public':'Approve and publish'}</button></div>`).join(''):'<div class="empty">No reviews yet.</div>'}};
+async reviews(){
+  const r=await sb.from('reviews').select('*').order('created_at',{ascending:false});
+  if(r.error)throw r.error;
+  L=r.data||[];
+  let orderMap={};
+  const orderIds=[...new Set(L.map(x=>x.order_id).filter(Boolean))];
+  if(orderIds.length){
+   const or=await sb.from('orders').select('id,order_no,name,contact').in('id',orderIds);
+   if(!or.error)for(const o of (or.data||[]))orderMap[o.id]=o;
+  }
+  $('#view').innerHTML=L.length?L.map((x,i)=>{
+   const o=orderMap[x.order_id]||null;
+   const reviewPhotoPath=x.image_path||x.artwork_photo_path||null;
+   return `<article class="card review-admin-card" data-review-index="${i}">
+    <div class="meta"><b>${esc(x.name||'Customer')}</b> <span aria-label="${Number(x.stars)||0} stars">${'★'.repeat(Math.max(0,Math.min(5,Number(x.stars)||0)))}</span> ${B(x.approved?'Published':'Hidden')} <span class="mute">${dt(x.created_at)}</span></div>
+    <p style="margin:12px 0;white-space:pre-wrap;overflow-wrap:anywhere">${esc(x.body||'')}</p>
+    ${reviewPhotoPath?`<div class="review-admin-photo" data-review-photo="${esc(reviewPhotoPath)}"><span class="mute">Loading customer artwork photo…</span></div>`:'<p class="mute">No artwork photo attached to this review.</p>'}
+    <div class="sec" style="margin-top:14px;padding-top:14px">
+     <h3>Review details</h3>
+     <p><b>Review ID:</b> <code>${esc(x.id)}</code></p>
+     <p><b>Customer name:</b> ${esc(x.name||'—')}</p>
+     <p><b>Rating:</b> ${Number(x.stars)||0} / 5</p>
+     <p><b>Submitted:</b> ${dt(x.created_at)||'—'}</p>
+     <p><b>Order:</b> ${o?esc(o.order_no):esc(x.order_id||'Not linked')}</p>
+     ${o?`<p><b>Order customer:</b> ${esc(o.name||'—')} · ${esc(o.contact||'—')}</p>`:''}
+     <p><b>Customer account ID:</b> <code>${esc(x.user_id||'Not recorded')}</code></p>
+     <p><b>Artwork image path:</b> <code>${esc(reviewPhotoPath||'None')}</code></p>
+     <p><b>Publication:</b> ${x.approved?'Published':'Hidden'}</p>
+    </div>
+    <button class="${x.approved?'g':''}" data-v="${i}">${x.approved?'Hide from public':'Publish review'}</button>
+   </article>`;
+  }).join(''):'<div class="empty">No reviews have been submitted yet.</div>';
+  $('#view').querySelectorAll('[data-review-photo]').forEach(async box=>{
+   const {data,error}=await sb.storage.from('review-artworks').createSignedUrl(box.dataset.reviewPhoto,900);
+   if(!error&&data?.signedUrl)box.innerHTML=`<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener"><img src="${esc(data.signedUrl)}" alt="Customer finished artwork" loading="lazy" style="display:block;width:100%;max-width:520px;max-height:440px;object-fit:contain;border-radius:10px;background:#f2e9dd"></a>`;
+   else box.textContent='Artwork photo unavailable. Check the review-artworks bucket and its read policy.';
+  });
+ }};
 
 /* orders list and detail */
 function match(o){const q=F.q.toLowerCase(),s=o.summary;return (!q||[o.order_no,o.name,o.contact,o.type].join(' ').toLowerCase().includes(q))&&(!F.st||o.status==F.st)&&(!F.pay||s.payment_status==F.pay)&&(!F.dm||o.delivery_method==F.dm)&&(!F.ds||o.delivery_status==F.ds)&&(!F.pre||PRE[F.pre][1](o))}
@@ -372,8 +410,12 @@ $('#view').addEventListener('submit',async e=>{
    const {data:adminAuth,error:authError}=await sb.auth.getUser();
    if(authError)throw authError;
    if(!adminAuth?.user?.id)throw new Error('Your admin session has expired. Please sign in again.');
-   const path=`${adminAuth.user.id}/${form.dataset.orderId}/${crypto.randomUUID()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;
-   const up=await sb.storage.from('message-attachments').upload(path,file,{contentType:file.type,upsert:false});if(up.error)throw up.error;imagePath=path;
+   const compressed=await shrink(file);
+   if(!compressed)throw new Error('The image could not be processed. Please choose another JPG, PNG, or WebP file.');
+   const path=`${adminAuth.user.id}/${form.dataset.orderId}/${crypto.randomUUID()}.webp`;
+   const up=await sb.storage.from('message-attachments').upload(path,compressed,{contentType:'image/webp',upsert:false});
+   if(up.error)throw new Error('Image upload failed: '+up.error.message+' (check the message-attachments bucket and its Storage policies).');
+   imagePath=path;
   }
   const {error}=await sb.rpc('admin_send_message_attachment',{p_order_id:form.dataset.orderId,p_body:body||null,p_image_path:imagePath});
   if(error){if(imagePath)await sb.storage.from('message-attachments').remove([imagePath]);throw error}
