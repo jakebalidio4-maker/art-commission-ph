@@ -767,6 +767,9 @@ button,.btn,input,select,textarea{font-family:var(--sans)}
 .art-card-badge.sold{border-color:#d9a49e;background:#fff0ee;color:#94372f}
 #shop .empty{grid-column:1/-1}
 @media(max-width:560px){#shopGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}}
+
+.chat-message-image img{display:block;max-width:min(100%,420px);max-height:420px;object-fit:contain;border-radius:12px;margin:8px 0}
+.customer-message-form input[type=file]{max-width:100%;font-size:.9rem}
 </style>
 <style>
 /* V4 — discrete public / authentication / customer workspace screens */
@@ -964,65 +967,7 @@ input,select,textarea,button,.btn{max-width:100%}
 .notification-item small,.notification-empty{font-size:.75rem;color:#74695d}
 .notification-empty{padding:22px 10px;text-align:center}
 @media(max-width:700px){.nav-notifications{width:100%}#notificationBell{width:100%;justify-content:center}#notificationPanel{position:fixed;top:78px;right:12px;left:12px;width:auto;max-height:calc(100dvh - 100px)}}
-</style>
-<style id="responsive-navigation-final-fix">
-/* Shop Originals is its own view: never bleed into pricing, account, orders, or other pages. */
-body:not([data-view="public"]) > #shop{display:none!important}
-body[data-view="shop"] > #shop{display:block!important}
-body[data-view="shop"] > .hero,
-body[data-view="shop"] > #gallery,
-body[data-view="shop"] > #pricing,
-body[data-view="shop"] > #how,
-body[data-view="shop"] > #reviews{display:none!important}
-/* Commission CTA belongs to browsing/inquiry, not the account or order-management screens. */
-body[data-view="account"] .site-header .nav-commission,
-body[data-view="track"] .site-header .nav-commission,
-body[data-view="order"] .site-header .nav-commission{display:none!important}
-/* Fluid desktop and laptop sizing. */
-html{scroll-padding-top:84px}
-body{font-size:clamp(15px,calc(14px + .22vw),17px)}
-section{width:100%;min-width:0}
-.site-header{width:100%;min-width:0}
-.site-header .nav-layout{min-width:0}
-.site-header .nav-primary,.site-header .nav-actions{min-width:0}
-#gallery .grid,#shopGrid,.price,.steps,.rev{width:100%;min-width:0}
-#shopGrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,245px),1fr))}
-#supportSections{width:100%;max-width:1160px}
-#supportSections>section{width:100%;min-width:0}
-#supportSections .account-card,#supportSections #orderForm,#supportSections #trackOut{width:100%;max-width:100%}
-#dlg{width:min(860px,calc(100vw - 32px));max-width:860px}
-#dlgArt{min-width:0}
-#dlgArt img{max-width:100%;height:auto}
-@media(min-width:1181px){
- .site-header{padding-left:max(4vw,calc((100vw - 1440px)/2));padding-right:max(4vw,calc((100vw - 1440px)/2))}
- section{padding-left:max(5vw,calc((100vw - 1280px)/2));padding-right:max(5vw,calc((100vw - 1280px)/2))}
- .hero{min-height:min(78vh,820px)}
-}
-@media(max-width:860px){
- body[data-view="shop"] #shop{padding-top:44px;padding-bottom:56px}
- body[data-view="shop"] #shopGrid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:600px){
- .site-header{padding-left:14px!important;padding-right:14px!important}
- #supportSections{padding:24px 14px 52px}
- #supportSections>section{padding:0!important}
- #supportSections #orderForm .two{grid-template-columns:minmax(0,1fr)}
- #shopGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
- #shopGrid .art{padding:8px}
- #shopGrid .art-card-copy{padding:9px 2px 3px}
- #shopGrid .art-card-copy strong{font-size:.94rem}
- #shopGrid .art-card-copy small{font-size:.82rem}
- #shopGrid .art-card-price{font-size:.95rem}
- #dlg{width:calc(100vw - 20px);max-height:calc(100dvh - 24px)}
- #dlgArt img{max-height:55dvh;object-fit:contain}
- .cap{padding:14px 16px 20px}
-}
-@media(max-width:380px){
- #shopGrid{grid-template-columns:1fr}
- .site-header .logo{font-size:1.05rem}
-}
-</style>
-</head>
+</style></head>
 <body>
 <nav aria-label="Main website navigation" class="site-header">
 <a class="logo" href="index.html"><img alt="" onerror="this.remove()" src="logo.png" style="height:30px;vertical-align:middle;margin-right:8px"/>Art Commission <i>PH</i></a>
@@ -1060,7 +1005,7 @@ section{width:100%;min-width:0}
 </section>
 <section id="gallery">
 <p class="section-kicker">01 / Selected work</p>
-<div class="studio-section-heading"><div><h2>Find the piece that speaks to you.</h2><p class="lead">Own an original artwork today—or commission a one-of-a-kind piece inspired by your story.</p></div><a class="studio-quicklink" href="#order">Create something personal <span aria-hidden="true">↗</span></a><a class="studio-quicklink" href="#shop">Shop original artworks <span aria-hidden="true">↗</span></a></div>
+<div class="studio-section-heading"><div><h2>Find the piece that speaks to you.</h2><p class="lead">Own an original artwork today—or commission a one-of-a-kind piece inspired by your story.</p></div><a class="studio-quicklink" href="#order">Create something personal <span aria-hidden="true">↗</span></a></div>
 <div class="tabs" id="tabs"></div>
 <div class="grid" id="grid"></div>
 </section>
@@ -1585,7 +1530,8 @@ async function loadCustomerMessages(orderId){
  const out=$('#customerThread');if(!out)return;
  if(error){out.innerHTML='<p class="hint">Messages could not be loaded. Please refresh.</p>';return}
  const msgs=Array.isArray(data)?data:[];
- out.innerHTML=msgs.length?msgs.map(m=>`<article class="customer-message ${m.sender_role==='customer'?'mine':'theirs'}"><div class="chat-message-meta"><strong>${m.sender_role==='customer'?'You':'Jake · Artist'}</strong><time datetime="${esc(m.created_at)}">${new Date(m.created_at).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}</time></div><div class="chat-message-body">${esc(m.body).replace(/\n/g,'<br>')}</div></article>`).join(''):'<div class="chat-empty"><span class="chat-empty-icon" aria-hidden="true">✉</span><strong>Start the conversation</strong><p>Ask about this order, request an addition, or check on your artwork progress.</p></div>';
+ out.innerHTML=msgs.length?msgs.map(m=>`<article class="customer-message ${m.sender_role==='customer'?'mine':'theirs'}"><div class="chat-message-meta"><strong>${m.sender_role==='customer'?'You':'Jake · Artist'}</strong><time datetime="${esc(m.created_at)}">${new Date(m.created_at).toLocaleString('en-PH',{dateStyle:'medium',timeStyle:'short'})}</time></div>${m.image_path?`<div class="chat-message-image" data-message-image="${esc(m.image_path)}"><span class="hint">Loading image…</span></div>`:''}${m.body?`<div class="chat-message-body">${esc(m.body).replace(/\n/g,'<br>')}</div>`:''}</article>`).join(''):'<div class="chat-empty"><span class="chat-empty-icon" aria-hidden="true">✉</span><strong>Start the conversation</strong><p>Ask about this order, request an addition, or check on your artwork progress.</p></div>';
+ out.querySelectorAll('[data-message-image]').forEach(async box=>{const {data,error}=await sb.storage.from('message-attachments').createSignedUrl(box.dataset.messageImage,900);if(!error&&data?.signedUrl)box.innerHTML=`<a href="${esc(data.signedUrl)}" target="_blank" rel="noopener"><img src="${esc(data.signedUrl)}" alt="Artwork progress attachment" loading="lazy"></a>`;else box.textContent='Image unavailable';});
  out.scrollTop=out.scrollHeight;
 }
 async function subscribeCustomerMessages(orderId){
@@ -1707,7 +1653,7 @@ function renderTrack(){const o=T,s=o.summary,P=o.payments,act=x=>P.some(p=>p.pur
   <p class="chat-intro">Ask Jake about additions, reference details, changes, payment, or delivery. Artwork progress updates will also appear here.</p>
   <div id="customerThread" class="customer-thread" aria-live="polite" aria-relevant="additions text"><p class="hint">Loading your conversation…</p></div>
   <div class="chat-prompts" aria-label="Suggested messages"><span>Quick message:</span><button type="button" data-chat-template="Hi Jake, I’d like to ask if I can add an extra detail to this order.">Ask about an addition</button><button type="button" data-chat-template="Hi Jake, could you please share an update on the artwork progress for this order?">Request progress update</button><button type="button" data-chat-template="Hi Jake, I have a question about the final details of this order.">Ask a question</button></div>
-  <form class="customer-message-form"><label for="customerMessageBody">Your message to Jake<textarea id="customerMessageBody" name="body" required minlength="1" maxlength="2000" placeholder="Write your question or additional request…"></textarea></label><div class="chat-compose-footer"><small>Keep messages related to this order so everything stays organized.</small><button class="btn" type="submit"><span aria-hidden="true">↗</span> Send message</button></div></form>
+  <form class="customer-message-form"><label for="customerMessageBody">Your message to Jake<textarea id="customerMessageBody" name="body" required minlength="1" maxlength="2000" placeholder="Write your question or additional request…"></textarea></label><div class="chat-compose-footer"><label class="chat-attach-label">Attach artwork/photo <input type="file" name="message_image" accept="image/jpeg,image/png,image/webp"></label><small>Images up to 5 MB. Keep messages related to this order.</small><button class="btn" type="submit"><span aria-hidden="true">↗</span> Send message</button></div></form>
  </section>`;
  $('#trackOut').innerHTML=h;loadCustomerMessages(o.id);subscribeCustomerMessages(o.id)}
 $('#trackOut').addEventListener('click',e=>{const chip=e.target.closest('[data-chat-template]');if(!chip)return;const form=chip.closest('.customer-messages')?.querySelector('.customer-message-form');const input=form?.querySelector('textarea[name="body"]');if(!input)return;input.value=chip.dataset.chatTemplate||'';input.focus();input.setSelectionRange(input.value.length,input.value.length)});
@@ -1717,8 +1663,17 @@ $('#trackOut').onsubmit=async e=>{
  try{
   let r;
   if(e.target.classList.contains('customer-message-form')){
-   r=await sb.rpc('customer_send_message',{p_order_id:T.id,p_body:String(f.get('body')||'').trim()});
-   if(r.error)throw r.error;e.target.reset();await loadCustomerMessages(T.id);await loadCustomerOrders();show($('#trackMsg'),'Message sent to Jake.');b.disabled=false;return;
+   const body=String(f.get('body')||'').trim(),file=f.get('message_image');
+   if(!body&&(!file||!file.size))throw new Error('Write a message or attach an image.');
+   let imagePath=null;
+   if(file&&file.size){if(file.size>5*1024*1024)throw new Error('Please use an image smaller than 5 MB.');
+    if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Use JPG, PNG, or WebP images.');
+    const path=`${currentUser.id}/${T.id}/${crypto.randomUUID()}.${file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg'}`;
+    const up=await sb.storage.from('message-attachments').upload(path,file,{contentType:file.type,upsert:false});if(up.error)throw up.error;imagePath=path;
+   }
+   r=await sb.rpc('customer_send_message_attachment',{p_order_id:T.id,p_body:body||null,p_image_path:imagePath});
+   if(r.error){if(imagePath)await sb.storage.from('message-attachments').remove([imagePath]);throw r.error}
+   e.target.reset();await loadCustomerMessages(T.id);await loadCustomerOrders();show($('#trackMsg'),'Message sent to Jake.');b.disabled=false;return;
   }
   if(e.target.classList.contains('pf')){
    let path=null;const file=f.get('rc');
@@ -1777,7 +1732,7 @@ sb.auth.onAuthStateChange((event,_session)=>{
 // Customer single-file router: account, order and track are NOT homepage scroll sections.
 let pendingCustomerDestination=null;
 function customerView(){
- const target=['gallery','shop','pricing','how','reviews','account','order','track'].includes(location.hash.slice(1))?location.hash.slice(1):'public';
+ const target=['gallery','pricing','how','reviews','account','order','track'].includes(location.hash.slice(1))?location.hash.slice(1):'public';
  if((target==='order'||target==='track') && (!currentUser || !isVerifiedUser(currentUser))){
    pendingCustomerDestination=target;
    if(location.hash!=='#account'){location.hash='#account';return;}
