@@ -1812,5 +1812,28 @@ document.querySelectorAll('a[href="#order"],a[href="#track"]').forEach(a=>a.addE
 }));
 
 </script>
+
+<style id="customer-section-separation">
+/* Keep the customer portal destinations strictly separate. */
+body[data-view="account"] #supportSections > #account,
+body[data-view="track"] #supportSections > #track {
+  display: block !important;
+}
+body[data-view="account"] #supportSections > #order,
+body[data-view="account"] #supportSections > #track,
+body[data-view="track"] #supportSections > #account,
+body[data-view="track"] #supportSections > #order {
+  display: none !important;
+}
+/* The commission request remains available only through its own destination. */
+body[data-view="order"] #supportSections > #order {
+  display: block !important;
+}
+body[data-view="order"] #supportSections > #account,
+body[data-view="order"] #supportSections > #track {
+  display: none !important;
+}
+</style>
+
 </body>
 </html>
