@@ -422,6 +422,11 @@ function drawDet(){const i=L.findIndex(o=>o.id==sel);const el=$('#odet');if(i<0)
   ${o.customer_id?`<p>Linked to a customer account${o.customer_email?' · <b>'+esc(o.customer_email)+'</b>':''}.</p>`:`<p>This is a legacy/unlinked order. After the customer creates an account and verifies their email, enter that exact email to attach this order to their account.</p>
   <div class="row"><label>Verified customer email<input class="customer-email" type="email" autocomplete="off" placeholder="customer@example.com"></label><button class="g" data-act="link-customer">Link order to account</button></div>`}
  </div>
+ <div class="sec commission-review"><h3>Commission deadline and decision</h3>
+  <p><b>Requested completion deadline:</b> ${o.requested_deadline?esc(o.requested_deadline):'<span class="mute">Not supplied (legacy order)</span>'}</p>
+  <p><b>Decision:</b> ${B(o.commission_decision||'Accepted')}</p>
+  ${(o.commission_decision||'Accepted')==='Pending'?`<div class="row"><button data-act="commission-accept">Accept commission</button><label style="flex:1;min-width:240px">Decline message<textarea class="commission-decline-message" rows="3">Thank you for your interest in commissioning an artwork. Unfortunately, I won't be able to complete your requested artwork within your preferred deadline due to my current workload and production schedule. I apologize for the inconvenience and appreciate your understanding.</textarea></label><button class="d" data-act="commission-decline">Decline commission and send message</button></div>`:o.commission_decision==='Declined'?`<p>${esc(o.commission_decline_message||o.reply||'No decline message recorded.')}</p>`:`<p class="mute">This commission has been accepted. You may proceed with price confirmation.</p>`}
+ </div>
  <div class="sec"><h3>Price and artwork</h3><div class="row"><label>Artwork price (PHP)<input class="pr" type="number" min="1" step="0.01" value="${o.price??''}"></label><button data-act="price">Confirm final price</button><label>Artwork status<select class="as">${AS.map(x=>`<option ${x==o.status?'selected':''}>${x}</option>`).join('')}${['Delivered','Cancelled'].includes(o.status)?`<option selected>${o.status}</option>`:''}</select></label><button class="g" data-act="status">Save artwork status</button></div>
  </div>
  <div class="sec payment-summary"><h3>Payments and balance</h3>
@@ -464,7 +469,9 @@ $('#view').onclick=async e=>{const b=e.target.closest('button');if(!b)return;con
  if(b.id=='addArt')return addArt();
  const card=b.closest('.card[data-i]');
  if(card&&d.act){const o=L[card.dataset.i],q=x=>card.querySelector(x),a=d.act;let x;
-  if(a=='price'){const v=+q('.pr').value;if(!(v>0))return say('Enter a price above zero.',1);x=await sb.rpc('admin_confirm_order',{p_id:o.id,p_price:v})}
+  if(a=='commission-accept'){if(!await ask('Accept this commission?','The customer will be notified and you can then confirm the final price.','Accept commission'))return;x=await sb.rpc('admin_decide_commission',{p_id:o.id,p_decision:'Accepted',p_message:null})}
+  else if(a=='commission-decline'){const msg=q('.commission-decline-message')?.value.trim();if(!msg)return say('Enter a message for the customer.',1);if(!await ask('Decline this commission?','The customer will receive your message.','Decline commission'))return;x=await sb.rpc('admin_decide_commission',{p_id:o.id,p_decision:'Declined',p_message:msg})}
+  else if(a=='price'){const v=+q('.pr').value;if(!(v>0))return say('Enter a price above zero.',1);x=await sb.rpc('admin_confirm_order',{p_id:o.id,p_price:v})}
   else if(a=='status')x=await sb.rpc('admin_set_status',{p_id:o.id,p_status:q('.as').value});
   else if(a=='deliv'){const m=q('.dm').value;if(!m)return say('Choose a delivery method.',1);const f=q('.fe').value;x=await sb.rpc('admin_set_delivery',{p_id:o.id,p_method:m,p_arr:q('.pa').value,p_fee:f===''?null:+f})}
   else if(a=='reply')x=await sb.rpc('admin_set_reply',{p_id:o.id,p_reply:q('.rp').value});
