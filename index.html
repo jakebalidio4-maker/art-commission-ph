@@ -1521,7 +1521,7 @@ async function loadCustomerOrders(){
  $('#ordersList').innerHTML=orders.map(o=>`<button type="button" class="order-list-card" data-order-id="${esc(o.id)}" aria-pressed="${T?.id===o.id?'true':'false'}">
    <strong>${esc(o.order_no)}</strong><span>${esc(o.type||'Artwork request')}</span>
    <small>Placed ${new Date(o.created_at).toLocaleDateString('en-PH')}</small>
-   <span>${bdg('Commission',o.commission_decision||'Accepted')} ${bdg('Artwork',o.status)} ${bdg('Payment',o.summary?.payment_status||'Unpaid')}</span>
+   <span>${bdg('Commission',o.commission_decision||'Pending')} ${bdg('Artwork',o.status)} ${bdg('Payment',o.summary?.payment_status||'Unpaid')}</span>
    <small>${o.unread_messages?`${o.unread_messages} unread message${o.unread_messages==1?'':'s'} · `:''}${esc(o.delivery_status||'Not Ready')}</small>
   </button>`).join('');
 }
@@ -1651,9 +1651,9 @@ const bdg=(k,v)=>`<span class="st ${/^(Verified|Paid|Delivered|Done|Shipped)/.te
 function tl(o,s){const dn=['Delivered'].includes(o.delivery_status),st=[['Order placed',1],['Price confirmed',s.price!=null],['Downpayment verified',s.price!=null&&s.down_verified>=s.down_required],['Artwork in progress',['In Progress','Done','Delivered'].includes(o.status)],['Artwork done',['Done','Delivered'].includes(o.status)],['Fully paid',s.payment_status=='Paid'],[dn?'Delivered':'Shipped or delivered',['Shipped','Delivered'].includes(o.delivery_status)]];let c=st.findIndex(x=>!x[1]);
  return '<ol class="tl" aria-label="Order progress">'+st.map((x,i)=>`<li class="${x[1]?'done':i==c?'cur':''}">${x[0]}</li>`).join('')+'</ol>'}
 function renderTrack(){const o=T,s=o.summary,P=o.payments,act=x=>P.some(p=>p.purpose==x&&p.status!='Rejected'),pend=x=>P.some(p=>p.purpose==x&&p.status=='Pending Verification');
- let h=`<p style="margin-top:14px"><b>${esc(o.order_no)}</b> | ${esc(o.type)} | Size: ${esc(o.size)}</p><p>${bdg('Commission',o.commission_decision||'Accepted')}${bdg('Artwork',o.status)}${bdg('Payment',s.payment_status)}${bdg('Delivery',o.delivery_status+(o.delivery_method?' ('+o.delivery_method+')':''))}</p>`;
+ let h=`<p style="margin-top:14px"><b>${esc(o.order_no)}</b> | ${esc(o.type)} | Size: ${esc(o.size)}</p><p>${bdg('Commission',o.commission_decision||'Pending')}${bdg('Artwork',o.status)}${bdg('Payment',s.payment_status)}${bdg('Delivery',o.delivery_status+(o.delivery_method?' ('+o.delivery_method+')':''))}</p>`;
  if(o.requested_deadline)h+=`<p><b>Requested completion deadline:</b> ${esc(o.requested_deadline)}</p>`;
- if((o.commission_decision||'Accepted')==='Pending')h+=`<div class="note" role="status">Your commission is waiting for admin approval. Payment is not available yet.</div>`;
+ if((o.commission_decision||'Pending')==='Pending')h+=`<div class="note" role="status">Your commission is waiting for admin approval. Payment is not available yet.</div>`;
  if(o.commission_decision==='Declined')h+=`<div class="note" role="status"><b>Commission declined.</b><br>${esc(o.commission_decline_message||o.reply||'The artist cannot accept this request at the requested time.')}</div>`;
  if(o.status!='Cancelled')h+=tl(o,s);
  if(s.price!=null)h+=`<p>Artwork price: ${peso(s.price)}<br>Required downpayment (50%): ${peso(s.down_required)}<br>Verified downpayment: ${peso(s.down_verified)}<br>Remaining artwork balance: ${peso(s.balance)}${o.delivery_method=='LBC'?`<br>LBC shipping fee: ${s.shipping_fee!=null?peso(s.shipping_fee):'to be confirmed by Jake'}`:''}<br><b>Still due: ${peso(s.total_due)}</b></p>`;
@@ -1662,13 +1662,13 @@ function renderTrack(){const o=T,s=o.summary,P=o.payments,act=x=>P.some(p=>p.pur
  if(s.payment_status=='Rejected'&&s.last_rejection)h+=`<p>Your last payment was rejected: ${esc(s.last_rejection)}. You can submit it again.</p>`;
  h+=`<p>Jake's reply: ${esc(o.reply)}</p>`;
  const dpOK=s.price!=null&&s.down_verified>=s.down_required,open=o.status!='Cancelled'&&o.status!='Delivered';
- if((o.commission_decision||'Accepted')==='Accepted'&&s.price!=null&&open&&!act('Downpayment'))h+=payForm('Downpayment',s.down_required,'Pay the 50% downpayment first. Jake starts your artwork after he verifies it.');
+ if((o.commission_decision||'Pending')==='Accepted'&&s.price!=null&&open&&!act('Downpayment'))h+=payForm('Downpayment',s.down_required,'Pay the 50% downpayment first. Jake starts your artwork after he verifies it.');
  if(pend('Downpayment'))h+='<p>Your downpayment is waiting for Jake to verify it.</p>';
- if((o.commission_decision||'Accepted')==='Accepted'&&dpOK&&open&&o.delivery_status=='Not Ready'&&!act('Final Payment'))h+=delivForm();
+ if((o.commission_decision||'Pending')==='Accepted'&&dpOK&&open&&o.delivery_status=='Not Ready'&&!act('Final Payment'))h+=delivForm();
  if(o.delivery_method=='Local'&&o.pay_arrangement=='COD'&&open)h+=`<p>Local delivery with COD: the remaining ${peso(s.balance)} is paid in cash when Jake delivers your artwork.</p>`;
  if(o.delivery_method=='LBC'&&open)h+='<p>For LBC shipping, the remaining balance and the shipping fee must both be paid and verified before your artwork is shipped.</p>';
  const cod=o.delivery_method=='Local'&&o.pay_arrangement=='COD';
- if((o.commission_decision||'Accepted')==='Accepted'&&dpOK&&open&&o.status=='Done'&&o.delivery_method&&!cod&&(o.delivery_method!='LBC'||s.shipping_fee!=null)&&!act('Final Payment'))h+=payForm('Final Payment',s.final_required,'Your artwork is done! Pay the final amount through GCash.');
+ if((o.commission_decision||'Pending')==='Accepted'&&dpOK&&open&&o.status=='Done'&&o.delivery_method&&!cod&&(o.delivery_method!='LBC'||s.shipping_fee!=null)&&!act('Final Payment'))h+=payForm('Final Payment',s.final_required,'Your artwork is done! Pay the final amount through GCash.');
  if(pend('Final Payment'))h+='<p>Your final payment is waiting for Jake to verify it.</p>';
  if(o.status=='Cancelled'){h+=`<p><b>This order is cancelled.</b>${o.cancel_reason?' Reason: '+esc(o.cancel_reason):''}</p>`;
   if(s.refund_status=='Pending')h+=`<p>A refund of ${peso(s.refund_due)} will be sent to your GCash.</p>`;
